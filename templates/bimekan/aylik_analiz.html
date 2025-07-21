@@ -1,0 +1,132 @@
+{% extends 'bimekan/base.html' %}
+{% load static %}
+
+{% block content %}
+{% block extra_css%}
+<style>
+  .row-white {
+    background-color: #ffffff;
+    transition: background-color 0.2s ease;
+  }
+
+  .row-gray {
+    background-color: #f9fafb;
+    transition: background-color 0.2s ease;
+  }
+
+  .row-white:hover,
+  .row-gray:hover {
+    background-color: #e0f2fe; /* Tailwind: bg-blue-100 */
+  }
+</style>
+{% endblock %}
+<div class="max-w-5xl mx-auto bg-white shadow-md rounded-xl p-6 mt-6">
+
+     <!-- 🔹 Sayfa Başlığı -->
+  <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+  
+    <i class="fas fa-chart-line text-blue-600"></i> Konaklama İstatistikleri – {{ yil }}
+  </h2>
+  {# BURAYA YAPIŞTIRABİLİRSİNİZ: #}
+<div class="mt-8 p-6 bg-white rounded-lg shadow-md">
+    <h3 class="text-xl font-semibold text-gray-800 border-b pb-3 mb-4 flex items-center">
+        <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i> Yıllara Göre Benzersiz Misafir Sayısı
+    </h3>
+    <ul class="list-disc pl-5 space-y-2">
+        {% for year, count in yillik_dosya_sayilari.items %}
+            <li class="text-gray-700 text-lg">
+                <span class="font-medium text-blue-700">{{ year }} Yılı:</span> <span class="font-bold text-gray-900">{{ count }}</span> benzersiz misafir
+            </li>
+        {% empty %}
+            <li class="text-gray-500 text-lg">Henüz yıl bazında veri bulunmamaktadır.</li>
+        {% endfor %}
+    </ul>
+</div>
+  
+  <!-- 📊 Bilgi Kutuları -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-3">
+  <!-- Toplam Konaklayan -->
+  <div class="bg-blue-50 border-l-4 border-blue-400 px-4 py-3 rounded-md text-sm flex justify-between items-center">
+    <div class="flex items-center gap-2 text-gray-800 font-medium">
+      <i class="fas fa-users text-blue-500"></i> Toplam Dosya Sayısı
+    </div>
+    <div class="text-indigo-700 text-base font-bold bg-white px-3 py-1 rounded-md">{{ toplam_kisi }}</div>
+  </div>
+
+  <!-- Kalab Kişi -->
+  <div class="bg-green-50 border-l-4 border-green-400 px-4 py-3 rounded-md text-sm flex justify-between items-center">
+    <div class="flex items-center gap-2 text-gray-800 font-medium">
+      <i class="fas fa-sign-in-alt text-green-500"></i> Kalan Kişi Sayısı
+    </div>
+    <div class="text-green-700 text-base font-bold bg-white px-3 py-1 rounded-md">{{ toplam_kalan }}</div>
+  </div>
+
+  <!-- Çıkan Kişi -->
+  <div class="bg-pink-50 border-l-4 border-pink-400 px-4 py-3 rounded-md text-sm flex justify-between items-center">
+    <div class="flex items-center gap-2 text-gray-800 font-medium">
+      <i class="fas fa-sign-out-alt text-pink-500"></i> Çıkan Kişi Sayısı
+    </div>
+    <div class="text-pink-700 text-base font-bold bg-white px-3 py-1 rounded-md">{{ toplam_cikan }}</div>
+  </div>
+</div>
+
+ 
+
+  <!-- 📋 Aylık Tablo -->
+  <div class="overflow-x-auto">
+    <table class="w-full border border-gray-200 rounded-md text-sm bg-white shadow-sm">
+      <thead class="bg-gradient-to-r from-indigo-100 via-blue-50 to-indigo-100 text-gray-700 font-semibold">
+        <tr>
+          <th class="px-3 py-2 text-left">Ay</th>
+          <th class="px-3 py-2 text-center">Giren</th>
+          <th class="px-3 py-2 text-center">Çıkan</th>
+          <th class="px-3 py-2 text-center">Kalan</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for veri in aylik_veriler %}
+        {% cycle 'row-white' 'row-gray' as row_class silent %}
+            <tr class="{{ row_class }}">  
+        
+          
+            <td class="px-3 py-2 font-medium text-gray-700">{{ veri.ay }}. Ay</td>
+            <td class="px-3 py-2 text-center text-indigo-700">{{ veri.giren }}</td>
+            <td class="px-3 py-2 text-center text-pink-700">{{ veri.cikan }}</td>
+            <td class="px-3 py-2 text-center text-green-700 font-semibold">{{ veri.kalan }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+        <div class="bg-blue-50 border-l-4 border-blue-400 px-4 py-3 rounded-md text-sm flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-2 text-gray-800 font-medium">
+                <i class="fas fa-cubes text-blue-500"></i> Yıl Boyunca Toplam Dosya
+            </div>
+            <div class="text-blue-700 text-base font-bold bg-white px-3 py-1 rounded-md">{{ genel_aylik_toplam }}</div>
+        </div>
+
+        <div class="bg-indigo-50 border-l-4 border-indigo-400 px-4 py-3 rounded-md text-sm flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-2 text-gray-800 font-medium">
+                <i class="fas fa-sign-in-alt text-indigo-500"></i> Yıl Boyunca Giren
+            </div>
+            <div class="text-indigo-700 text-base font-bold bg-white px-3 py-1 rounded-md">{{ genel_giren_toplam }}</div>
+        </div>
+
+        <div class="bg-pink-50 border-l-4 border-pink-400 px-4 py-3 rounded-md text-sm flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-2 text-gray-800 font-medium">
+                <i class="fas fa-sign-out-alt text-pink-500"></i> Yıl Boyunca Çıkan
+            </div>
+            <div class="text-pink-700 text-base font-bold bg-white px-3 py-1 rounded-md">{{ genel_cikan_toplam }}</div>
+        </div>
+
+        <div class="bg-green-50 border-l-4 border-green-400 px-4 py-3 rounded-md text-sm flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-2 text-gray-800 font-medium">
+                <i class="fas fa-users-cog text-green-500"></i> Mevcut Kalan Kişi
+            </div>
+            <div class="text-green-700 text-base font-bold bg-white px-3 py-1 rounded-md">{{ toplam_kalan }}</div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

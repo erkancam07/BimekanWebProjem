@@ -1,0 +1,363 @@
+{% extends 'bimekan/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div id="new-misafir-form" class="form-section active bg-white rounded-lg shadow-md p-6 mb-6">
+        {# Sayfa Başlığı renklendirildi #}
+        <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+  <i class="fas fa-user-plus text-blue-500 mr-2"></i> Yeni Kişi Kaydı
+</h2>
+
+
+{# Form Başlangıcı #}
+<form method="post" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+            {# Kişisel Bilgiler başlığı ve ayraç #}
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                    <i class="fas fa-id-card mr-2 text-blue-500"></i> Kişisel Bilgiler
+                </h3>
+                <hr class="mt-2 border-gray-400"> {# Başlığın hemen altında soluk çizgi #}
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="{{ form.tc_kimlik_no.id_for_label }}" class="block text-sm font-medium text-gray-700">TC Kimlik No</label>
+                    <div class="mt-1"> {# Tailwind için input'un etrafında div ekleyebiliriz #}
+                        {{ form.tc_kimlik_no }}
+                    </div>
+                    {% if form.tc_kimlik_no.errors %}
+                        <ul class="text-red-600 text-sm mt-1"> {# Hata listesi için ul/li kullanmak daha iyi #}
+                            {% for error in form.tc_kimlik_no.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if form.tc_kimlik_no.help_text %} {# Yardımcı metni de gösterebiliriz #}
+                        <p class="mt-2 text-sm text-gray-500">{{ form.tc_kimlik_no.help_text }}</p>
+                    {% endif %}
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.ad.id_for_label }}" class="block text-sm font-medium text-gray-700">Adı</label>
+                        <div class="mt-1">
+                            {{ form.ad }}
+                        </div>
+                        {% if form.ad.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.ad.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.soyad.id_for_label }}" class="block text-sm font-medium text-gray-700">Soyadı</label>
+                        <div class="mt-1">
+                            {{ form.soyad }}
+                        </div>
+                        {% if form.soyad.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.soyad.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.dogum_tarihi.id_for_label }}" class="block text-sm font-medium text-gray-700">Doğum Tarihi</label>
+                        <div class="mt-1">
+                            {{ form.dogum_tarihi }}
+                        </div>
+                        {% if form.dogum_tarihi.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.dogum_tarihi.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.dogum_yeri.id_for_label }}" class="block text-sm font-medium text-gray-700">Doğum Yeri</label>
+                        <div class="mt-1">
+                            {{ form.dogum_yeri }}
+                        </div>
+                        {% if form.dogum_yeri.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.dogum_yeri.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <label for="{{ form.fotograf.id_for_label }}" class="block text-sm font-medium text-gray-700">Kişi Fotoğrafı</label>
+                    <div class="mt-1">
+                        {{ form.fotograf }}
+                    </div>
+                    {% if form.fotograf.errors %}
+                        <ul class="text-red-600 text-xs mt-1">
+                            {% for error in form.fotograf.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            {# İletişim Bilgileri başlığı ve ayraç #}
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                    <i class="fas fa-address-book mr-2 text-blue-500"></i> İletişim Bilgileri
+                </h3>
+                <hr class="mt-2 border-gray-400"> {# Başlığın hemen altında soluk çizgi #}
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="{{ form.telefon.id_for_label }}" class="block text-sm font-medium text-gray-700">Telefon</label>
+                    <div class="mt-1">
+                        {{ form.telefon }}
+                    </div>
+                    {% if form.telefon.errors %}
+                        <ul class="text-red-600 text-xs mt-1">
+                            {% for error in form.telefon.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.adres.id_for_label }}" class="block text-sm font-medium text-gray-700">Adres</label>
+                    <div class="mt-1">
+                        {{ form.adres }}
+                    </div>
+                    {% if form.adres.errors %}
+                        <ul class="text-red-600 text-xs mt-1">
+                            {% for error in form.adres.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.sosyal_guvence.id_for_label }}" class="block text-sm font-medium text-gray-700">Sosyal Güvence</label>
+                    <div class="mt-1">
+                        {{ form.sosyal_guvence }}
+                    </div>
+                    {% if form.sosyal_guvence.errors %}
+                        <ul class="text-red-600 text-xs mt-1">
+                            {% for error in form.sosyal_guvence.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+            {# Konaklama Bilgileri başlığı ve ayraç #}
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                    <i class="fas fa-bed mr-2 text-blue-500"></i> Konaklama Bilgileri
+                </h3>
+                <hr class="mt-2 border-gray-400"> {# Başlığın hemen altında soluk çizgi #}
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="{{ form.yatak_no.id_for_label }}" class="block text-sm font-medium text-gray-700">Yatak No</label>
+                    <div class="mt-1">
+                        {{ form.yatak_no }}
+                    </div>
+                    {% if form.yatak_no.errors %}
+                        <ul class="text-red-600 text-xs mt-1">
+                            {% for error in form.yatak_no.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.giris_tarihi.id_for_label }}" class="block text-sm font-medium text-gray-700">Giriş Tarihi</label>
+                    <div class="mt-1">
+                        {{ form.giris_tarihi }}
+                    </div>
+                    {% if form.giris_tarihi.errors %}
+                        <ul class="text-red-600 text-xs mt-1">
+                            {% for error in form.giris_tarihi.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            {# Beyan Bölümü başlığı ve ayraç #}
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                    <i class="fas fa-file-alt mr-2 text-blue-500"></i> Kişinin Beyanı
+                </h3>
+                <hr class="mt-2 border-gray-400"> {# Başlığın hemen altında soluk çizgi #}
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="{{ form.beyan.id_for_label }}" class="block text-sm font-medium text-gray-700">Beyan / Notlar</label>
+                    <div class="mt-1">
+                        {{ form.beyan }}
+                    </div>
+                    {% if form.beyan.errors %}
+                        <ul class="text-red-600 text-xs mt-1">
+                            {% for error in form.beyan.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-end space-x-2">
+        <button type="reset" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Temizle
+        </button>
+        <button type="submit" class="inline-flex items-center px-4 py-2 border border-blue-200 
+        text-sm font-medium rounded-md shadow-sm 
+        bg-blue-50 text-blue-700 
+        hover:bg-blue-100 hover:text-blue-800 
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+            <i class="fas fa-save mr-2"></i>
+            Kaydet
+        </button>
+    </div>
+</form>
+    </div>
+{% block extra_js %}
+<script>
+   // Belirtilen alanların değerlerini büyük harfe çeviren fonksiyon
+    function convertToUppercase(event) {
+        // 'this' anahtar kelimesi, olayın tetiklendiği input elementini temsil eder.
+        // toLocaleUpperCase('tr-TR') ile Türkçe karakter uyumluluğu sağlanır.
+        event.target.value = event.target.value.toLocaleUpperCase('tr-TR');
+    }
+
+    // Beyan alanı hariç tüm text ve textarea inputlarını seçelim
+    // Input alanları form.field_name ile oluşturulduğu için id'leri id_field_name şeklindedir.
+    const fieldsToUppercase = [
+        document.getElementById('id_ad'),
+        document.getElementById('id_soyad'),
+        document.getElementById('id_dogum_yeri'),
+        document.getElementById('id_adres'),
+        // 'id_beyan' buraya eklenmedi, çünkü büyük harfe çevrilmesi istenmiyor.
+    ];
+
+    // Her bir alana 'input' olay dinleyicisi ekleyelim
+    // Kullanıcı yazarken otomatik olarak büyük harfe çevrilir
+    fieldsToUppercase.forEach(field => {
+        if (field) { // Alanın var olup olmadığını kontrol et
+            field.addEventListener('input', convertToUppercase);
+        }
+    });
+
+    // Form gönderilmeden önce son bir kontrol olarak da kullanılabilir (isteğe bağlı)
+    // Ancak 'input' olayı anlık dönüşüm sağladığı için bu genellikle yeterlidir.
+    // Yine de bir güvenlik katmanı olarak bırakmak isteyebilirsiniz.
+    document.querySelector('form').addEventListener('submit', function() {
+        fieldsToUppercase.forEach(field => {
+            if (field) { // Alanın var olup olmadığını kontrol et
+                field.value = field.value.toLocaleUpperCase('tr-TR');
+            }
+        });
+    });
+
+    // Mevcut TC Kontrol fonksiyonları
+    function tcKontrolYap() {
+        const tcInput = document.getElementById("id_tc_kimlik_no");
+        const tc = tcInput.value;
+
+        if (tc.length === 11) {
+            fetch(`/ajax/tc-kontrol/?tc=${tc}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "var") {
+                        window.location.href = `/misafir/${data.misafir_id}/detay/?uyari=1`;
+                    }
+                });
+        }
+    }
+    // 'blur' olay dinleyicisini sadece bir kez eklediğinizden emin olun,
+    // HTML'de iki kez eklenmiş gibi görünüyor. Aşağıdaki tek satır yeterlidir.
+    document.getElementById("id_tc_kimlik_no").addEventListener("blur", tcKontrolYap);
+
+
+    // Bu fonksiyon muhtemelen bilgileri doldurmak için kullanılıyor
+    // Eğer TC kontrolünden sonra form alanlarını otomatik dolduruyorsanız bu fonksiyon da doğru çalışmalı.
+    // Buradaki alanların büyük harfe çevrilip çevrilmemesi tamamen sizin tercihinize bağlıdır.
+    // Eğer 'data.ad' zaten veritabanından büyük harf geliyorsa sorun olmaz.
+    // Eğer küçük harf geliyorsa ve formda büyük harf görünmesini istiyorsanız, buraya da toLocaleUpperCase ekleyebilirsiniz.
+    function tcKontrolYap1() { // Bu fonksiyonun çağrıldığından emin olun, eğer kullanılmıyorsa kaldırılabilir.
+        const tcInput = document.getElementById("id_tc_kimlik_no");
+        const tc = tcInput.value;
+
+        if (tc.length === 11) {
+            fetch(`/ajax/tc-kontrol/?tc=${tc}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "var") {
+                        // Bilgileri doldur
+                        document.getElementById("id_ad").value = data.ad.toLocaleUpperCase('tr-TR'); // Örnek olarak ekledim
+                        document.getElementById("id_soyad").value = data.soyad.toLocaleUpperCase('tr-TR'); // Örnek olarak ekledim
+                        document.getElementById("id_dogum_tarihi").value = data.dogum_tarihi;
+                        document.getElementById("id_dogum_yeri").value = data.dogum_yeri.toLocaleUpperCase('tr-TR'); // Örnek olarak ekledim
+                        document.getElementById("id_telefon").value = data.telefon;
+                        document.getElementById("id_adres").value = data.adres.toLocaleUpperCase('tr-TR'); // Örnek olarak ekledim
+                        document.getElementById("id_sosyal_guvence").value = data.sosyal_guvence_id;
+
+                        // Diğer alanlar da varsa ekleyin
+                        document.getElementById("id_yatak_no").value = data.yatak_no;
+                        document.getElementById("id_giris_tarihi").value = data.giris_tarihi;
+                        document.getElementById("id_beyan").value = data.beyan; // Beyan alanı büyük harfe çevrilmeyecek
+
+                        if (data.fotograf_url) {
+                            // "misafir-fotograf" id'li bir elementinizin HTML'de mevcut olduğundan emin olun.
+                            const misafirFotograf = document.getElementById("misafir-fotograf");
+                            if (misafirFotograf) {
+                                misafirFotograf.src = data.fotograf_url;
+                                misafirFotograf.classList.remove("d-none");
+                            }
+                        }
+
+                        // "kayit-uyarisi" id'li bir elementinizin HTML'de mevcut olduğundan emin olun.
+                        const kayitUyarisi = document.getElementById("kayit-uyarisi");
+                        if (kayitUyarisi) {
+                            kayitUyarisi.classList.remove("d-none");
+                        }
+                    } else {
+                        // Önceki uyarıyı gizle
+                        const kayitUyarisi = document.getElementById("kayit-uyarisi");
+                        if (kayitUyarisi) {
+                            kayitUyarisi.classList.add("d-none");
+                        }
+                    }
+                });
+        }
+    }
+    // Eğer tcKontrolYap1 fonksiyonunu kullanmak istiyorsanız, ilgili olay dinleyicisini eklemelisiniz.
+    // Örneğin, inputun değiştiğinde veya blur olduğunda bu fonksiyonu çağırabilirsiniz.
+    // document.getElementById("id_tc_kimlik_no").addEventListener("input", tcKontrolYap1); // veya 'blur'
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Aydınlatma Metni ve Açık Rıza Formu</title>
+  <link rel="stylesheet" href="{% static 'base/css/acikriza.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
+  <div class="a4-container">
+    
+    <div class="page-toolbar">
+        <button class="back-button" onclick="window.location.href='{{ detay_url }}';">← Geri</button>
+        <button class="print-button" onclick="window.print();">🖨️ Yazdır</button>
+    </div>
+
+    <div class="header-section">
+      <p>T.C.</p>
+      <p>AİLE VE SOSYAL HİZMETLER BAKANLIĞI</p>
+      <p class="main-title">AYDINLATMA METNİ VE AÇIK RIZA FORMU</p>
+    </div>
+
+    <div class="content-section">
+      <p>
+        Başvuru sahipleri bu haklarını, KVK Kanunu’nun 13 üncü maddesi ve Veri Sorumlusu Destek Başvuru Usul ve Esasları Hakkında Tebliğ hükümleri çerçevesinde Bakanlığa başvurmak suretiyle kullanabilir.
+        KVK Kanunu’nun 13 üncü maddesi uyarınca yapılacak yazılı başvurular " T.C. Aile ve Sosyal Hizmetler Bakanlığı, Eskişehir Yolu Söğütözü Mah. 2177. Sok. No: 10/A 06510 Çankaya/ANKARA " adresine; Kayıtlı Elektronik Posta (KEP) ile yapılacak başvurular ise "ashb@hs01.kep.tr" adresine iletilmelidir.
+      </p>
+      <p>
+        Ayrıca bu aydınlatma metni ile açık rıza formunun bir örneğine Bakanlığın <span class="bold-underline">https://www.aile.gov.tr/syhm</span> adresinden erişim sağlanabilecektir.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <p class="bold-underline">AÇIK RIZA FORMU</p>
+      <p>
+        6698 Sayılı Kişisel Verilerin Korunması Kanunu'nun (KVK Kanunu) ilgili hükümlerine uygun olarak Veri sorumlusu sıfatıyla T.C. Aile ve Sosyal Hizmetler Bakanlığı ve 3294 Sayılı Yardımlaşma ve Dayanışmayı Teşvik Kanunu kapsamında kurulan sayılı Sosyal Yardımlaşma ve Dayanışma Vakıfları ile Bakanlık taşra birimleri tarafından özel nitelikli kişisel verilerimin;
+      </p>
+      <p>
+        Sosyal yardım ve hizmet başvurumun değerlendirilmesi, ihtiyaç sahipliğimin tespit edilebilmesi, sosyal yardım ve hizmetlerden faydalandırılabilmek ile sosyal yardım ve hizmetleri veri tabanının oluşturulabilmesi için ilgili süreç kapsamında işlenme amacı ile sınırlı olmak üzere kullanılmamasına, kaydedilmesine, işlenmesine ve aktarılmasına gereken süre zarfında saklanmasına açık rıza olduğumuzu ve bu hususta tarafıma gerekli aydınlatmanın yapıldığını;
+      </p>
+      <p>
+        Kabul ve beyan ediyorum. Vermiş olduğum bilgilerimin doğruluğunu beyan ve taahhüt ediyorum. Söz konusu bilgilerin gerçeğe aykırı olduğunun tespiti halinde ilgili mevzuat uyarınca doğabilecek her türlü hukuki ve cezai sorumluluğu kabul ediyorum.
+      </p>
+    </div>
+
+    <div class="form-table-container">
+  <table class="form-table">
+    <thead>
+      <tr>
+        <th style="width: 17%;">TC Kimlik No</th>
+        <th style="width: 14%;">Tarih</th>
+        <th style="width: 25%;">Ad/Soyad</th>
+        <th style="width: 15%;">Kabul Ediyorum</th>
+        <th style="width: 15%;">İzin Vermiyorum</th>
+        <th style="width: 14%;">Yakınlık</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="dynamic-field-wrapper">
+            <textarea class="dynamic-input tcno" rows="2">{{ misafir.tc_kimlik_no | default:'' }}</textarea>
+          </div>
+        </td>
+        <td>
+          <div class="dynamic-field-wrapper">
+            <textarea class="dynamic-input tarih" rows="2">{{ misafir.giris_tarihi|date:'d.m.Y'|default:'' }}</textarea>
+          </div>
+        </td>
+        <td>
+          <div class="dynamic-field-wrapper">
+            <textarea class="dynamic-input adsoyad" rows="2">{{ misafir.ad_soyad }}</textarea>
+          </div>
+        </td>
+        <td></td>
+        <td></td>
+        <td>
+          <div class="dynamic-field-wrapper">
+            <textarea class="dynamic-input yakinlik" rows="2">{{ misafir.yakinlik | default:'' }}</textarea>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

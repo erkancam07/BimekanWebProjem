@@ -1,0 +1,110 @@
+{% extends 'bimekan/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto bg-white shadow-md rounded-xl p-6 mt-6">
+
+    <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-clipboard-check text-blue-600"></i> Günlük Yoklama Paneli
+    </h2>
+
+    {# Kişi sayısı ve "Tüm Yoklama Kayıtları" butonu için yeni düzenleme #}
+    <div class="mb-6 flex justify-between items-center mt-3">
+       {% if kisi_alan_listesi %}
+    <div class="bg-blue-50 border-l-4 border-blue-400 px-4 py-3 rounded-md text-sm flex justify-between items-center">
+        <div class="flex items-center gap-2 text-gray-800 font-medium">
+            <i class="fas fa-users text-blue-500"></i>
+            Toplam Aktif Misafir Sayısı:
+        </div>
+        <div class="text-indigo-700 text-base font-bold bg-white px-3 py-1 ml-4 rounded-md">{{ kisi_alan_listesi|length }}</div>
+    </div>
+{% else %}
+
+            {# Kişi yoksa bu mesajı gösterelim #}
+            <div class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md text-sm font-medium shadow-md">
+                Bugün için aktif misafir bulunamadı.
+            </div>
+        {% endif %}
+
+        <a href="{% url 'yoklama_listesi' %}" class="inline-flex items-center px-4 py-2 border border-blue-200 
+                                text-sm font-medium rounded-md shadow-sm 
+                                bg-blue-50 text-blue-700 
+                                hover:bg-blue-100 hover:text-blue-800 
+                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+            <i class="fas fa-list-alt mr-2"></i> Tüm Yoklama Kayıtları
+        </a>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- 📋 Başlıklar - Sıra No için 7 sütuna güncellendi -->
+        <div class="grid grid-cols-7 gap-3 text-sm font-semibold text-gray-600 px-3 py-2 bg-gray-200 rounded-md mb-2">
+            <div>Sıra No</div> {# Yeni Sıra No başlığı #}
+            <div>Dosya No</div>
+            <div>Ad Soyad</div>
+            <div>T.C. Kimlik No</div>
+            <div>Yatak No</div>
+            <div>Yoklama Tarihi</div>
+            <div>Durum</div>
+        </div>
+
+        {# Bu kısım zaten var, sadece üstteki "kişi bulunamadı" mesajını taşıdık #}
+        {% if not kisi_alan_listesi %}
+            <div class="mt-4 p-4 bg-yellow-100 text-yellow-800 rounded-md text-sm">
+                Bugün için aktif durumda kişi bulunamadı. Yoklama yapılacak kişi yok.
+            </div>
+        {% endif %}
+
+        <!-- 👥 Satırlar - Sıra No için 7 sütuna güncellendi -->
+        <div class="space-y-2">
+        {% for kisi, alan in kisi_alan_listesi %}
+            <div class="grid grid-cols-7 gap-2 items-center bg-gray-50 border border-gray-200 rounded-md px-2 py-1 text-sm hover:bg-blue-50 transition duration-150">
+                <div>{{ forloop.counter }}</div> {# Her satır için sıra numarası #}
+                <div>{{ kisi.dosya_no }}</div>
+                <div class="font-medium">{{ kisi.ad }} {{ kisi.soyad }}</div>
+                <div>{{ kisi.tc_kimlik_no }}</div>
+                <div>{{ kisi.yatak_no.yatak_numarasi }}</div>
+                <div>{{ today|date:"d.m.Y" }}</div>
+                <div>{{ alan }}</div> {# ✅ Form alanı burada görünür #}
+            </div>
+        {% endfor %}
+        </div>
+
+        <div class="mt-6 flex justify-end">
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-blue-200 
+                                    text-sm font-medium rounded-md shadow-sm 
+                                    bg-blue-50 text-blue-700 
+                                    hover:bg-blue-100 hover:text-blue-800 
+                                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                <i class="fas fa-save mr-2"></i> Yoklama Kaydet
+            </button>
+        </div>
+    </form>
+</div>
+
+{% block extra_js%}
+<script>
+    function setView(viewType) {
+        if (viewType === 'list') {
+            listView.classList.remove('hidden');
+            cardView.classList.add('hidden');
+            listViewBtn.classList.add('bg-blue-100', 'text-blue-700');
+            listViewBtn.classList.remove('bg-white', 'text-gray-700');
+            cardViewBtn.classList.remove('bg-blue-100', 'text-blue-700');
+            cardViewBtn.classList.add('bg-white', 'text-gray-700');
+            localStorage.setItem(localStorageKey, 'list'); // Anahtarı dinamik yap
+        } else {
+            cardView.classList.remove('hidden');
+            listView.classList.add('hidden');
+            cardViewBtn.classList.add('bg-blue-100', 'text-blue-700');
+            cardViewBtn.classList.remove('bg-white', 'text-gray-700');
+            listViewBtn.classList.remove('bg-blue-100', 'text-blue-700');
+            listViewBtn.classList.add('bg-white', 'text-gray-700');
+            localStorage.setItem(localStorageKey, 'card'); // Anahtarı dinamik yap
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

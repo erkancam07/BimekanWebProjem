@@ -1,0 +1,68 @@
+{% extends 'bimekan/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<a href="{% url 'stok_raporu' %}" class="inline-flex mb-4 items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md shadow-sm">
+  <i class="fas fa-arrow-left mr-1"></i> Geri Dön
+</a>
+<div class="bg-white border rounded-xl shadow-sm p-6 mb-6">
+    
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center gap-2">
+  <i class="fas fa-chart-bar text-indigo-500"></i> Yardım Özeti
+</h3>
+
+    <!-- Ürün adı buton/rozet şeklinde -->
+    <span class="inline-flex items-center px-3 py-1 text-sm bg-indigo-100 text-indigo-700 rounded-full shadow-sm font-medium">
+      {{ urun.ad }}
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center text-sm text-gray-700">
+    <div class="bg-sky-50 rounded-lg border px-4 py-3 shadow hover:shadow-md transition">
+      <div class="text-xs text-gray-500 uppercase mb-1">Toplam Dağıtım</div>
+      <div class="text-xl font-bold text-indigo-600">{{ toplam_miktar }}</div>
+    </div>
+
+    <div class="bg-green-50 rounded-lg border px-4 py-3 shadow hover:shadow-md transition">
+      <div class="text-xs text-gray-500 uppercase mb-1">İşlem Sayısı</div>
+      <div class="text-xl font-bold text-sky-600">{{ yardim_sayisi }}</div>
+    </div>
+
+    <div class="bg-yellow-50 rounded-lg border px-4 py-3 shadow hover:shadow-md transition">
+      <div class="text-xs text-gray-500 uppercase mb-1">Farklı Kişi</div>
+      <div class="text-xl font-bold text-green-600">{{ kisi_sayisi }}</div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="bg-white rounded-lg shadow-md p-6">
+   
+
+    <table class="w-full mt-4 border rounded-md">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="px-4 py-2 text-left">Kişi</th>
+                <th class="px-4 py-2">TC</th>
+                <th class="px-4 py-2">Adet</th>
+                <th class="px-4 py-2">Tarih</th>
+                <th class="px-4 py-2">Açıklama</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for islem in yardimlar %}
+                <tr class="border-t">
+                    <td class="px-4 py-2">{{ islem.alici.ad }} {{ islem.alici.soyad }}</td>
+                    <td class="px-4 py-2">{{ islem.alici.tc_kimlik_no }}</td>
+                    <td class="px-4 py-2">{{ islem.miktar }}</td>
+                    <td class="px-4 py-2">{{ islem.olusturulma_tarihi|date:"d.m.Y H:i" }}</td>
+                    <td class="px-4 py-2 text-sm text-gray-700">{{ islem.aciklama }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5" class="text-center text-gray-500 px-4 py-4">Henüz yardım yapılmamış.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

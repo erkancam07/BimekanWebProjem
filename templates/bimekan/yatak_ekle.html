@@ -1,0 +1,205 @@
+{% extends 'bimekan/base.html' %}
+{% load custom_filters %} {# my_filters yerine custom_filters kullandığımızı varsayıyorum #}
+
+{% block content %}
+<div class="max-w-screen-xl mx-auto bg-white p-6 rounded-md shadow-sm">
+
+    <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-bed text-blue-500 mr-2"></i> Yatak Ekle & Listele
+    </h2>
+
+    <form method="post" class="mb-8 mt-3 bg-blue-50 p-4 rounded-md shadow-inner">
+        {% csrf_token %}
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+            <label for="{{ form.yatak_numarasi.id_for_label }}" class="block text-sm font-semibold text-blue-700 md:w-auto w-full">
+                <i class="fas fa-plus-circle mr-1"></i> {{ form.yatak_numarasi.label }}
+            </label>
+            {{ form.yatak_numarasi|add_class:"flex-grow px-3 py-2 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700" }}
+            <button type="submit"
+                    class="w-full md:w-auto px-5 py-2.5 bg-blue-600 text-white text-base font-medium rounded-md hover:bg-blue-700 transition duration-200 ease-in-out flex items-center justify-center whitespace-nowrap">
+                <i class="fas fa-save mr-2"></i> Yatak Kaydet
+            </button>
+        </div>
+        {% if form.yatak_numarasi.errors %}
+            <ul class="text-red-600 text-xs mt-2 pl-4 list-disc">
+                {% for error in form.yatak_numarasi.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </form>
+
+    <div class="flex flex-wrap gap-3 mb-6 p-3 bg-gray-50 rounded-md border border-gray-200">
+        <button class="filter-btn bg-sky-100 text-sky-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                data-filter="tum">Tüm Yataklar</button>
+        <button class="filter-btn bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                data-filter="dolu">Dolu Yataklar</button>
+        <button class="filter-btn bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                data-filter="bos">Boş Yataklar</button>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-800 mt-10 mb-4 flex items-center">
+        <i class="fas fa-building text-blue-500 mr-2"></i> 1. Kat
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-sky-50 p-6 rounded-lg shadow-md">
+        <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2">Küçük Oda (K)</h4>
+            {% if kat_1_k %}
+                {% for yatak in kat_1_k %}
+                <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
+                    data-status="{% if yatak.dolu_mu %}dolu{% else %}bos{% endif %}">
+                    {% include 'partials/_yatak_karti.html' %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500 text-center py-4">Bu bölümde henüz yatak bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+        <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2">Büyük Oda (B)</h4>
+            {% if kat_1_b %}
+                {% for yatak in kat_1_b %}
+                <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
+                    data-status="{% if yatak.dolu_mu %}dolu{% else %}bos{% endif %}">
+                    {% include 'partials/_yatak_karti.html' %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500 text-center py-4">Bu bölümde henüz yatak bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-800 mt-10 mb-4 flex items-center">
+        <i class="fas fa-building text-purple-500 mr-2"></i> 2. Kat
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-purple-50 p-6 rounded-lg shadow-md">
+        <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2">Küçük Oda (K)</h4>
+            {% if kat_2_k %}
+                {% for yatak in kat_2_k %}
+                <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
+                    data-status="{% if yatak.dolu_mu %}dolu{% else %}bos{% endif %}">
+                    {% include 'partials/_yatak_karti.html' %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500 text-center py-4">Bu bölümde henüz yatak bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+        <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2">Büyük Oda (B)</h4>
+            {% if kat_2_b %}
+                {% for yatak in kat_2_b %}
+                <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
+                    data-status="{% if yatak.dolu_mu %}dolu{% else %}bos{% endif %}">
+                    {% include 'partials/_yatak_karti.html' %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500 text-center py-4">Bu bölümde henüz yatak bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-800 mt-10 mb-4 flex items-center">
+        <i class="fas fa-building text-pink-500 mr-2"></i> 3. Kat
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-pink-50 p-6 rounded-lg shadow-md">
+        <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2">Küçük Oda (K)</h4>
+            {% if kat_3_k %}
+                {% for yatak in kat_3_k %}
+                <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
+                    data-status="{% if yatak.dolu_mu %}dolu{% else %}bos{% endif %}">
+                    {% include 'partials/_yatak_karti.html' %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500 text-center py-4">Bu bölümde henüz yatak bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+        <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2">Büyük Oda (B)</h4>
+            {% if kat_3_b %}
+                {% for yatak in kat_3_b %}
+                <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
+                    data-status="{% if yatak.dolu_mu %}dolu{% else %}bos{% endif %}">
+                    {% include 'partials/_yatak_karti.html' %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500 text-center py-4">Bu bölümde henüz yatak bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-800 mt-10 mb-4 flex items-center">
+        <i class="fas fa-cloud-sun text-yellow-600 mr-2"></i> Teras Kat
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-yellow-50 p-6 rounded-lg shadow-md">
+        {# Teras katı için tip ayrımı yapmadığımız için tek bir liste gösteriyoruz #}
+        {% if kat_teras %}
+            {% for yatak in kat_teras %}
+            <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
+                data-status="{% if yatak.dolu_mu %}dolu{% else %}bos{% endif %}">
+                {% include 'partials/_yatak_karti.html' %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500 text-center py-4">Bu bölümde henüz yatak bulunmamaktadır.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() { // DOMContentLoaded ekledik
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const yatakCards = document.querySelectorAll('.yatak-card');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+
+                // Tüm butonlardan aktif renkleri kaldır, varsayılan hallerine getir
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-blue-600', 'text-white', 'bg-red-600', 'text-white', 'bg-green-600', 'text-white');
+                    // Varsayılan renklere geri döndür
+                    if (b.dataset.filter === 'tum') b.classList.add('bg-sky-100', 'text-sky-700');
+                    else if (b.dataset.filter === 'dolu') b.classList.add('bg-red-100', 'text-red-700');
+                    else if (b.dataset.filter === 'bos') b.classList.add('bg-green-100', 'text-green-700');
+                });
+
+                // Tıklanan butona aktif stil ekle (filtreye göre renk)
+                if (filter === 'tum') {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-sky-100', 'text-sky-700'); // Kaldırılması gereken orijinal renkleri de ekledik
+                } else if (filter === 'dolu') {
+                    btn.classList.add('bg-red-600', 'text-white');
+                    btn.classList.remove('bg-red-100', 'text-red-700');
+                } else if (filter === 'bos') {
+                    btn.classList.add('bg-green-600', 'text-white');
+                    btn.classList.remove('bg-green-100', 'text-green-700');
+                }
+
+                // Yatak kartlarını filtrele
+                yatakCards.forEach(card => {
+                    const status = card.dataset.status;
+                    if (filter === 'tum' || status === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Sayfa yüklendiğinde "Tüm Yataklar" butonunu varsayılan olarak aktif yap
+        // ve filtrelemeyi başlat
+        document.querySelector('.filter-btn[data-filter="tum"]').click();
+    });
+</script>
+{% endblock %}

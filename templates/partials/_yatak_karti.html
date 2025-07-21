@@ -1,0 +1,66 @@
+{% if not yatak.aktif_misafirler %}
+<div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-4 w-full">
+
+  <!-- 🛏️ Yatak No -->
+  <div class="flex-shrink-0 w-32 text-sm font-semibold text-gray-800">
+    🛏️ {{ yatak.yatak_numarasi }}
+  </div>
+
+  <!-- 📄 Bilgi Alanı -->
+  <div class="flex-1 min-w-0 text-sm text-gray-400">
+    Bu yatağa aktif misafir atanmadı.
+  </div>
+
+  <!-- 🛠️ Input + Kaydet + Sil -->
+  <div class="flex-shrink-0 flex items-center gap-2 flex-wrap md:flex-nowrap">
+    <!-- Kaydet Formu -->
+  <form method="post" class="flex items-center gap-2">
+    {% csrf_token %}
+    <input type="hidden" name="duzenle_id" value="{{ yatak.pk }}">
+    <input type="text" name="yatak_numarasi" value="{{ yatak.yatak_numarasi }}"
+           class="w-28 rounded-md border-2 border-gray-300 p-1 text-xs text-gray-700"
+           placeholder="Yatak No">
+    <button type="submit"
+            class="px-3 py-1 bg-sky-50 text-sky-700 rounded text-xs hover:bg-sky-100 border border-sky-200 transition">
+      💾 Kaydet
+    </button>
+  </form>
+
+    <!-- Sil Formu -->
+  <form method="post" action="{% url 'yatak_sil' yatak.pk %}"
+        onsubmit="return confirm('Bu yatağı silmek istediğinize emin misiniz?')">
+    {% csrf_token %}
+    <button type="submit"
+            class="px-3 py-1 bg-red-50 text-red-700 rounded text-xs hover:bg-red-100 border border-red-200 transition">
+      🗑️ Sil
+    </button>
+  </form>
+  </div>
+
+</div>
+{% else %}
+<!-- Dolu yataklar için önceki yapı -->
+<div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-4 w-full">
+
+  <!-- 🛏️ Yatak No -->
+  <div class="flex-shrink-0 w-32 text-sm font-semibold text-gray-800">
+    🛏️ {{ yatak.yatak_numarasi }}
+  </div>
+
+  <!-- 👤 Misafir Bilgisi -->
+  <div class="flex-1 min-w-0">
+    {% for misafir in yatak.aktif_misafirler %}
+    <div class="text-sm text-gray-700 truncate">
+      👤 {{ misafir.ad }} {{ misafir.soyad }}
+      <span class="text-xs text-gray-500 ml-2">T.C.: {{ misafir.tc_kimlik_no }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- 🔒 Uyarı -->
+  <div class="flex-shrink-0">
+    <span class="text-xs text-red-500">Aktif misafir var</span>
+  </div>
+
+</div>
+{% endif %}

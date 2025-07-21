@@ -1,0 +1,347 @@
+{% extends 'bimekan/base.html' %}
+{% load static %}
+{% load turkish_filters %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<style>
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #printable-area, #printable-area * {
+      visibility: visible;
+    }
+    #printable-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+
+    .print\:hidden {
+      display: none !important;
+    }
+
+    @page {
+      margin: 1cm;
+    }
+
+    /* Grid yapısını koru */
+    .md\:grid-cols-2 {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 1rem !important;
+    }
+
+    .md\:grid-cols-3 {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 1rem !important;
+    }
+
+    .flex {
+      display: flex !important;
+    }
+
+    .justify-center {
+      justify-content: center !important;
+    }
+
+    .items-start {
+      align-items: flex-start !important;
+    }
+
+    .rounded-md, .shadow-sm {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+
+    .bg-white {
+      background-color: white !important;
+    }
+
+    .border {
+      border: 1px solid #ccc !important;
+    }
+
+    .p-6 {
+      padding: 0.5rem !important;
+    }
+
+    .text-sm {
+      font-size: 12px !important;
+    }
+
+    .font-semibold {
+      font-weight: bold !important;
+    }
+
+    .text-gray-700 {
+      color: #333 !important;
+    }
+
+    .no-page-break {
+    page-break-inside: avoid;
+    page-break-before: auto;
+    page-break-after: auto;
+  }
+
+  * {
+    page-break-before: auto;
+    page-break-after: auto;
+    page-break-inside: avoid;
+  }
+    
+  }
+  .page-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 100;
+  background: #fff;
+  display: flex;
+  justify-content: flex-end; /* sağa hizalı */
+  align-items: center;
+  padding: 8px 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  height: 48px;
+}
+
+.print-button {
+  background-color: #e0f2fe; /* sky-100 */
+  color: #0369a1; /* sky-700 */
+  border: 1px solid #bae6fd; /* sky-200 */
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.print-button:hover {
+  background-color: #bae6fd; /* hover efekti */
+}
+
+
+</style>
+
+
+<div class="max-w-screen-lg mx-auto bg-white p-8 rounded-md shadow-sm print:p-0 print:shadow-none print:bg-white">
+
+  <!-- Başlık ve Yazdır Butonu -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+      <i class="fas fa-user-shield text-blue-500 mr-2"></i> Kişi Detayları: {{ misafir.ad }} {{ misafir.soyad }}
+    </h2>
+   <button onclick="window.print()" class="px-4 py-2 bg-sky-100 text-sky-800 text-sm rounded-md border border-sky-300 hover:bg-sky-200 transition print:hidden shadow">
+  🖨️ Yazdır
+</button>
+
+  
+  </div>
+
+  <div id="printable-area" class="no-page-break">
+
+    <!-- Fotoğraf -->
+    <div class="flex justify-center mb-8">
+      {% if misafir.fotograf %}
+        <img src="{{ misafir.fotograf.url }}" alt="{{ misafir.ad }} {{ misafir.soyad }}'ın fotoğrafı"
+             class="w-48 h-48 object-cover rounded-full shadow-lg border-4 border-blue-200">
+      {% else %}
+        <img src="https://placehold.co/192x192/cccccc/ffffff?text={{ misafir.ad|first }}{{ misafir.soyad|first }}"
+             alt="Profil Fotoğrafı Yok"
+             class="w-48 h-48 object-cover rounded-full shadow-lg border-4 border-gray-200">
+      {% endif %}
+    </div>
+
+    <div class="w-full bg-white border border-gray-200 rounded-md shadow-sm p-6 text-center text-gray-800 text-xl font-bold mb-4">
+  {{ misafir.ad }} {{ misafir.soyad }} - Detay Bilgileri
+</div>
+
+    <!-- Bilgi Kartları: 2 Sütunlu -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+      <!-- Kişisel Bilgiler -->
+      <div class="bg-white border border-gray-200 rounded-md shadow-sm p-6 text-sm text-gray-700">
+        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center bg-gradient-to-r from-white via-sky-100 to-white px-4 py-2 rounded-md ">
+  <i class="fas fa-id-card text-blue-500 mr-2"></i> Kişisel Bilgiler
+</h3>
+
+        <div class="grid grid-cols-2 gap-y-2">
+          <div class="font-semibold text-red-600">Dosya No:</div>
+          <div>{{ misafir.dosya_no }}</div>
+          <div class="font-semibold">T.C. Kimlik No:</div>
+          <div>{{ misafir.tc_kimlik_no }}</div>
+          <div class="font-semibold">Adı Soyadı:</div>
+          <div>{{ misafir.ad }} {{ misafir.soyad }}</div>
+          <div class="font-semibold">Doğum Tarihi / Yeri:</div>
+          <div>{{ misafir.dogum_tarihi|date:"d.m.Y" }} / {{ misafir.dogum_yeri }}</div>
+          <div class="font-semibold">Yaşı:</div>
+          <div>{% if yas %}{{ yas }} yaşında{% else %}Belirtilmemiş{% endif %}</div>
+        </div>
+      </div>
+
+      <!-- İletişim Bilgileri -->
+      <div class="bg-white border border-gray-200 rounded-md shadow-sm p-6 text-sm text-gray-700">
+       <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center bg-gradient-to-r from-white via-sky-100 to-white px-4 py-2 rounded-md">
+  <i class="fas fa-phone-alt text-blue-500 mr-2"></i> İletişim Bilgileri
+</h3>
+
+        <div class="grid grid-cols-2 gap-y-2">
+          <div class="font-semibold">Telefon:</div>
+          <div>{{ misafir.telefon|default:"Belirtilmemiş" }}</div>
+          <div class="font-semibold">Adres:</div>
+          <div>{{ misafir.adres|default:"Belirtilmemiş"|linebreaksbr }}</div>
+          <div class="font-semibold">Sosyal Güvence:</div>
+          <div>{{ misafir.sosyal_guvence|default:"Belirtilmemiş" }}</div>
+        </div>
+      </div>
+
+      <!-- Konaklama Bilgileri -->
+      <div class="bg-white border border-gray-200 rounded-md shadow-sm p-6 text-sm text-gray-700">
+        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center bg-gradient-to-r from-white via-sky-100 to-white px-4 py-2 rounded-md">
+  <i class="fas fa-bed text-blue-500 mr-2"></i> Konaklama Bilgileri
+</h3>
+
+        <div class="grid grid-cols-2 gap-y-2">
+          <div class="font-semibold">Giriş Tarihi:</div>
+          <div>{{ misafir.giris_tarihi|date:"d.m.Y H:i" }}</div>
+          <div class="font-semibold">Yatak No:</div>
+          <div>
+            
+           <!-- {{ misafir.yatak_no.yatak_numarasi|default:"Belirtilmemiş" }} eski hali nan geliyor diye yaptım-->
+             {% if misafir.yatak_no %}
+                  {% with yatak_numarasi=misafir.yatak_no.yatak_numarasi %}
+                      {# yatak_numarasi değerini string'e çevirip büyük harf yapıp "NAN" stringine eşit mi diye kontrol ediyoruz #}
+                      {% if yatak_numarasi is None or yatak_numarasi == "" or yatak_numarasi|stringformat:"s"|upper == "NAN" %}
+                          Yok
+                      {% else %}
+                          {{ yatak_numarasi }}
+                      {% endif %}
+                  {% endwith %}
+              {% else %}
+                  - {# Yatak ilişkisi tamamen boşsa #}
+              {% endif %}
+
+          </div>
+          <div class="font-semibold">Durum:</div>
+          <div>
+            {% if misafir.durum == 'AKTIF' %}
+              <span class="text-green-700 font-semibold">Aktif</span>
+            {% else %}
+              <span class="text-red-700 font-semibold">Pasif</span>
+            {% endif %}
+          </div>
+          {% if misafir.durum == 'PASIF' %}
+            <div class="font-semibold">Çıkış Tarihi:</div>
+            <div>{{ misafir.cikis_tarihi|date:"d.m.Y H:i"|default:"Belirtilmemiş" }}</div>
+            <div class="font-semibold">Çıkış Nedeni:</div>
+            <div>{{ misafir.cikis_nedeni|default:"Belirtilmemiş" }}</div>
+          {% endif %}
+          <div class="font-semibold">Kaldığı Gün:</div>
+          <div>{{ toplam_kalis_suresi|default:"-" }}</div>
+        </div>
+      </div>
+
+      <!-- Kişinin Beyanı -->
+      <div class="bg-white border border-gray-200 rounded-md shadow-sm p-6 text-sm text-gray-700">
+       <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center bg-gradient-to-r from-white via-sky-100 to-white px-4 py-2 rounded-md">
+  <i class="fas fa-comment-alt text-blue-500 mr-2"></i> Kişinin Beyanı
+</h3>
+
+        <div>{{ misafir.beyan|default:"Belirtilmemiş"|linebreaksbr }}</div>
+      </div>
+
+    </div>
+    <!-- Butonlar: 3'erli sağ/sol hizalı -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 print:hidden">
+      <div class="flex flex-col gap-2">
+        <a href="{% url 'misafir_islem_yap' pk=misafir.pk %}" class="px-4 py-2 bg-sky-100 text-sky-700 text-sm rounded hover:bg-sky-200 transition print:hidden">➕ Yeni İşlem</a>
+        <a href="{% url 'misafir_duzenle' pk=misafir.pk %}" class="px-4 py-2 bg-sky-100 text-sky-700 text-sm rounded hover:bg-sky-200 transition print:hidden">✏️ Düzenle</a>
+        <a href="{% url 'misafir_sil' pk=misafir.pk %}" class="px-4 py-2 bg-red-100 text-red-700 text-sm rounded hover:bg-red-200 transition print:hidden">🗑️ Sil</a>
+      </div>
+      <div class="flex flex-col gap-2">
+        <a href="{% url 'basvuru_formu_cikti' pk=misafir.pk %}" class="px-4 py-2 bg-sky-100 text-sky-700 text-sm rounded hover:bg-sky-200 transition print:hidden">📄 Başvuru Formu</a>
+        <a href="{% url 'acikriza_formu' pk=misafir.pk %}" class="px-4 py-2 bg-sky-100 text-sky-700 text-sm rounded hover:bg-sky-200 transition print:hidden">📝 Açık Rıza Formu</a>
+        <a href="{% url 'acikriza_soybis' pk=misafir.pk %}" class="px-4 py-2 bg-sky-100 text-sky-700 text-sm rounded hover:bg-sky-200 transition print:hidden">📝 SOYBİS Formu</a>
+      </div>
+    </div>
+
+    <!-- İşlem Geçmişi -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-700 mb-2 flex items-center bg-gradient-to-r from-white via-sky-100 to-white px-4 py-2 rounded-md">
+  <i class="fas fa-history text-blue-500 mr-2"></i> İşlem Geçmişi
+</h3>
+
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead class="bg-gray-100">
+  <tr>
+    <th class="px-4 py-2 text-left font-medium text-gray-600">İşlem No</th>
+    <th class="px-4 py-2 text-left font-medium text-gray-600">Tür</th>
+    <th class="px-4 py-2 text-left font-medium text-gray-600">İşlem Tarihi</th>
+  
+    <th class="px-4 py-2 text-left font-medium text-gray-600">Açıklama</th>
+    <th class="px-4 py-2 text-left font-medium text-gray-600">Tutar</th>
+    <th class="px-4 py-2 text-right font-medium text-gray-600 print:hidden">İşlem</th>
+  </tr>
+</thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          {% for islem in islem_page_obj.object_list %}
+         <tr>
+  <td class="px-4 py-2">{{ islem.islem_no }}</td>
+  <td class="px-4 py-2">{{ islem.islem_turu.ad }}</td>
+  <td class="px-4 py-2">
+  {% if islem.islem_turu.ad|lower == 'giriş' %}
+    {{ islem.misafir.giris_tarihi|date:"d.m.Y"|default:"-" }}
+  {% elif islem.islem_turu.ad|lower == 'çıkış' %}
+    {{ islem.misafir.cikis_tarihi|date:"d.m.Y"|default:"-" }}
+  {% else %}
+    {{ islem.islem_zamani|date:"d.m.Y"|default:"-" }}
+  {% endif %}
+</td>
+  <td class="px-4 py-2">{{ islem.aciklama|default:"-" }}</td>
+  <td class="px-4 py-2 text-right">{{ islem.tutar|turkish_currency }}</td>
+  <td class="px-4 py-2 text-right print:hidden">
+    <form method="post" action="{% url 'islem_sil' pk=islem.pk %}" onsubmit="return confirm('Bu işlemi silmek istediğinize emin misiniz?')">
+      {% csrf_token %}
+      <button type="submit"
+              class="px-2 py-1 bg-red-50 text-red-700 text-xs rounded hover:bg-red-100 transition">
+        🗑️ Sil
+      </button>
+    </form>
+  </td>
+</tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-4 py-2 text-center text-gray-500">İşlem kaydı bulunamadı.</td>
+          </tr>
+          {% endfor %}
+          {% if islem_page_obj.object_list %}
+  <tr class="bg-gray-50 font-semibold">
+    <td colspan="4" class="px-4 py-2 text-right">Toplam Tutar:</td>
+    <td class="px-4 py-2 text-right">{{ toplam_islem_tutari|turkish_currency }}</td>
+    <td class="print:hidden"></td>
+  </tr>
+{% endif %}
+        </tbody>
+      </table>
+
+      {% if toplam_islem_tutari %}
+      <div class="mt-4 text-right">
+        <div class="inline-block bg-sky-50 text-sky-700 px-4 py-2 rounded-md font-semibold shadow-sm">
+  💰 Toplam İşlem Tutarı: {{ toplam_islem_tutari|turkish_currency }}
+</div>
+      </div>
+      {% endif %}
+    </div>
+
+  </div> <!-- printable-area -->
+</div> <!-- container -->
+
+{% block extra_js%}
+{% endblock %}
+
+
+{% endblock %}

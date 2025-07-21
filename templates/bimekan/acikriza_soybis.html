@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>SOYBİS</title>
+  <link rel="stylesheet" href="{% static 'base/css/soybis.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
+  <div class="a4-container">
+    <div class="page-toolbar">
+        <button class="back-button" onclick="window.location.href='{{ detay_url }}';">← Geri</button>
+        <button class="print-button" onclick="window.print();">🖨️ Yazdır</button>
+    </div>
+    <div class="header-title">
+      <p class="text-center">ANTALYA SYDV</p>
+      <p class="text-center">ANTALYA SYD VAKFI SOSYAL YARDIMLAŞMA VE DAYANIŞMA VAKFI BAŞKANLIĞINA</p>
+    </div>
+
+    <div class="info-paragraph">
+      <p>Vakfımıza;</p>
+      <p>
+        Sosyal yardım ve proje destek programlarından faydalanmak,
+        Genel Sağlık Sigortası uygulaması kapsamında gelir testi yaptırmak,
+        3294 sayılı kanun uyarınca verilen aylıklardan faydalanmak,
+        nedenlerinden biri veya birkaçı için başvurmuş olup kişisel bilgilerimin ve gelir durumumun tespiti için ikamet ettiğim bölgede 3294 sayılı kanun hükümleri doğrultusunda kurulan Vakıflar ile Aile ve Sosyal Politikalar Bakanlığı birimlerince ilgili kurumların veri tabanlarından sorgulamaların yapılmasına; İkamet ettiğim hanede ve çevrede ilgili Vakıf tarafından inceleme yapılmasına; elde edilen bilgilerin başvurumun değerlendirilmesi sürecinde kullanılmasına; çalışabilir durumda olduğumun tespiti halinde İŞKUR kaydımın yapılmasına, istihdama ve istihdam kazanımını faaliyetlere haklı bir sebep olmaksızın katılım sağlamamam halinde müeyyide uygulanmasına; mevzuatta belirtilen zamanlarda hakkımdaki sorgulama ve incelemelerimin yenilenmesine, e-devlet kapısı üzerinden veya başka kanallarla tarafıma kısa mesaj elektronik posta gibi araçlarla bilgilendirme yapılmasına ve 13 Eylül 2014 resmi gazetede yayımlanan Sosyal Yardım Verilerinin Kaydedilmesine ve Paylaşılmasına İlişkin Yönetmelik kapsamında verilerimin kaydedilmesine ve paylaşılmasına izin veriyorum.
+      </p>
+      <p>
+        Bu formdaki bilgilerimin doğruluğunu beyan ediyor ve gerçek durumumu yansıtmayan yanlış, hatalı, eksik beyanımdan dolayı ortaya çıkabilecek zarara ilişkin sorumluluğumu ve idarenin yaptırımlarını kabul ediyorum.
+      </p>
+      <p>
+        - Yabancılara yönelik sosyal uyum yardım programından yararlanmak,
+      </p>
+      <p>
+        - İhtiyaç duyduğumda diğer sosyal hizmet ve kamu hizmetlerine yönlendirilmek ve takibinin yapılmasını sağlamak,
+      </p>
+    </div>
+
+    <table class="user-info-table">
+  <thead>
+    <tr>
+      <th style="width: 17%;">T.C. Kimlik No</th>
+      <th style="width: 25%;">Ad / Soyad</th>
+      <th style="width: 14%;">İzin Veriyorum<br>(İmza)</th>
+      <th style="width: 14%;">İzin Vermiyorum<br>(İmza)</th>
+      <th style="width: 16%;">Tarih</th>
+      <th style="width: 14%;">Yakınlık</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <textarea class="dynamic-input tcno" rows="2">{{ tc_kimlik_no|default:'' }}</textarea>
+      </td>
+      <td>
+        <textarea class="dynamic-input adsoyad" rows="2">{{ ad_soyad|default:'' }}</textarea>
+      </td>
+      <td class="signature-cell"></td>
+      <td class="signature-cell"></td>
+      <td>
+        <textarea class="dynamic-input tarih" rows="2">{{ tarih|default:'' }}</textarea>
+      </td>
+      <td>
+        
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    <!-- üst kısımlar aynı kalıyor... -->
+
+<div class="list-section">
+  <div class="list-column">
+    <h4>1) İçişleri Bakanlığı Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü</h4>
+    <ol>
+      <li>Nüfus Aile Kayıt Örneği</li>
+      <li>Aile Kayıt Örneği</li>
+      <li>Kişi Kayıt Örneği</li>
+      <li>Olay Bilgileri</li>
+      <li>Adres Bilgileri</li>
+    </ol>
+
+    <h4>2) İŞKUR Genel Müdürlüğü</h4>
+    <ol start="6">
+      <li>İŞKUR Kaydı</li>
+      <li>İşsizlik Sigortası Ödeneği</li>
+      <li>Kısa Çalışma Ödeneği</li>
+      <li>İş Kaybı Tazminatı</li>
+      <li>İstihdama Yönelik Faaliyet Sonucu</li>
+    </ol>
+
+    <h4>3) Çocuk Hizmetleri Genel Müdürlüğü</h4>
+    <ol start="11">
+      <li>Ayni/Nakdi Yardım</li>
+    </ol>
+
+    <h4>4) Vakıflar Genel Müdürlüğü</h4>
+    <ol start="12">
+      <li>Muhtaç Aylığı</li>
+      <li>Kuru Gıda Yardımı</li>
+    </ol>
+
+    <h4>5) Gelir İdaresi Başkanlığı</h4>
+    <ol start="14">
+      <li>Vergi Mükellefiyeti</li>
+      <li>Araç Sahipliği</li>
+    </ol>
+
+    <h4>6) Tapu Kadastro Genel Müdürlüğü</h4>
+    <ol start="16">
+      <li>Gayrimenkul Sahipliği</li>
+    </ol>
+
+    <h4>7) Sosyal Yardımlar Genel Müdürlüğü</h4>
+    <ol start="17">
+      <li>Şartlı Eğitim ve Sağlık Yardımı Bilgileri</li>
+      <li>Gelir Getirici Proje Bilgileri</li>
+      <li>Sosyal Yardım Bilgileri (YBB)</li>
+      <li>Gelir Testi Sonucu</li>
+      <li>Evde Bakım Aylığı</li>
+    </ol>
+  </div>
+
+  <div class="list-column">
+    <h4>8) Tarım ve Köy İşleri Bakanlığı</h4>
+    <ol start="22">
+      <li>Çiftçi Kayıt Sistemi Sorgulamaları</li>
+    </ol>
+
+    <h4>9) Sosyal Güvenlik Kurumu Başkanlığı</h4>
+    <ol start="23">
+      <li>Sosyal Güvenlik Bilgileri</li>
+      <li>Sağlık Müstahaklık Bilgileri</li>
+    </ol>
+
+    <h4>10) Sağlık Bakanlığı</h4>
+    <ol start="25">
+      <li>Aile Hekimliği Bilgi Sistemi Sağlık Kontrol Bilgisi</li>
+    </ol>
+
+    <h4>11) Yüksek Öğrenim Kredi ve Yurtlar Kurumu Genel Müdürlüğü</h4>
+    <ol start="26">
+      <li>Burs ve Kredi Bilgisi</li>
+    </ol>
+
+    <h4>12) İçişleri Bakanlığı İller İdaresi Genel Müdürlüğü</h4>
+    <ol start="27">
+      <li>Terör Kaybı Tazminatı</li>
+    </ol>
+
+    <h4>13) İçişleri Bakanlığı Bilgi İşlem Dairesi Başkanlığı</h4>
+    <ol start="28">
+      <li>Geçici Köy Korucusu Maaş Bilgileri</li>
+    </ol>
+
+    <h4>14) Milli Eğitim Bakanlığı</h4>
+    <ol start="29">
+      <li>Okul Devam Bilgisi</li>
+      <li>Okul Başarı Bilgisi</li>
+    </ol>
+
+    <h4>15) Milli Savunma Bakanlığı</h4>
+    <ol start="31">
+      <li>Askerlik Durum Bilgisi</li>
+      <li>Özürlü Vatandaşların Askerlik Bilgisi</li>
+    </ol>
+
+    <h4>16) Adalet Bakanlığı</h4>
+    <ol start="33">
+      <li>UYAP Nafaka Bilgisi</li>
+    </ol>
+
+    <h4>17) Bankalarda Kayıtlı Mevduat ve Harcama Bilgileri</h4>
+  </div>
+
+
+</div> <!-- a4-container kapanıyor -->
+</body>
+</html>
