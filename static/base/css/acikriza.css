@@ -23,6 +23,8 @@ td {
   margin: 20mm auto;
   box-shadow: 0 0 8px rgba(0,0,0,0.1);
   box-sizing: border-box;
+  
+  
 }
 
 /* Başlık alanı */
@@ -117,10 +119,9 @@ td {
 .form-table td:nth-child(6) { width: 14%; }
 
 .page-toolbar {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
-    width: 100vw;
     z-index: 100;
     background: #fff;
     display: flex;
@@ -202,5 +203,8 @@ td {
   .print-button:hover {
     background-color: #0056b3;
   }
+  .print-button:active {
+                transform: translateY(0);
+            }
 }
 

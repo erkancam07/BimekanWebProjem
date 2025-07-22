@@ -1,5 +1,5 @@
 {% extends 'bimekan/base.html' %}
-{% load custom_filters %} {# my_filters yerine custom_filters kullandığımızı varsayıyorum #}
+{% load custom_filters %} 
 
 {% block content %}
 <div class="max-w-screen-xl mx-auto bg-white p-6 rounded-md shadow-sm">
@@ -7,7 +7,6 @@
     <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
         <i class="fas fa-bed text-blue-500 mr-2"></i> Yatak Ekle & Listele
     </h2>
-
     <form method="post" class="mb-8 mt-3 bg-blue-50 p-4 rounded-md shadow-inner">
         {% csrf_token %}
         <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
@@ -138,7 +137,6 @@
         <i class="fas fa-cloud-sun text-yellow-600 mr-2"></i> Teras Kat
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-yellow-50 p-6 rounded-lg shadow-md">
-        {# Teras katı için tip ayrımı yapmadığımız için tek bir liste gösteriyoruz #}
         {% if kat_teras %}
             {% for yatak in kat_teras %}
             <div class="yatak-card bg-white border rounded-lg p-4 shadow w-full"
@@ -156,7 +154,7 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() { // DOMContentLoaded ekledik
+    document.addEventListener('DOMContentLoaded', function() { 
         const filterButtons = document.querySelectorAll('.filter-btn');
         const yatakCards = document.querySelectorAll('.yatak-card');
 
@@ -164,19 +162,17 @@
             btn.addEventListener('click', () => {
                 const filter = btn.dataset.filter;
 
-                // Tüm butonlardan aktif renkleri kaldır, varsayılan hallerine getir
+                
                 filterButtons.forEach(b => {
                     b.classList.remove('bg-blue-600', 'text-white', 'bg-red-600', 'text-white', 'bg-green-600', 'text-white');
-                    // Varsayılan renklere geri döndür
                     if (b.dataset.filter === 'tum') b.classList.add('bg-sky-100', 'text-sky-700');
                     else if (b.dataset.filter === 'dolu') b.classList.add('bg-red-100', 'text-red-700');
                     else if (b.dataset.filter === 'bos') b.classList.add('bg-green-100', 'text-green-700');
                 });
-
-                // Tıklanan butona aktif stil ekle (filtreye göre renk)
+                
                 if (filter === 'tum') {
                     btn.classList.add('bg-blue-600', 'text-white');
-                    btn.classList.remove('bg-sky-100', 'text-sky-700'); // Kaldırılması gereken orijinal renkleri de ekledik
+                    btn.classList.remove('bg-sky-100', 'text-sky-700'); 
                 } else if (filter === 'dolu') {
                     btn.classList.add('bg-red-600', 'text-white');
                     btn.classList.remove('bg-red-100', 'text-red-700');
@@ -184,8 +180,6 @@
                     btn.classList.add('bg-green-600', 'text-white');
                     btn.classList.remove('bg-green-100', 'text-green-700');
                 }
-
-                // Yatak kartlarını filtrele
                 yatakCards.forEach(card => {
                     const status = card.dataset.status;
                     if (filter === 'tum' || status === filter) {
@@ -196,9 +190,6 @@
                 });
             });
         });
-
-        // Sayfa yüklendiğinde "Tüm Yataklar" butonunu varsayılan olarak aktif yap
-        // ve filtrelemeyi başlat
         document.querySelector('.filter-btn[data-filter="tum"]').click();
     });
 </script>

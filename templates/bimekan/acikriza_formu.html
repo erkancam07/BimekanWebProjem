@@ -59,26 +59,23 @@
     <tbody>
       <tr>
         <td>
-          <div class="dynamic-field-wrapper">
+          
             <textarea class="dynamic-input tcno" rows="2">{{ misafir.tc_kimlik_no | default:'' }}</textarea>
-          </div>
+          
         </td>
         <td>
-          <div class="dynamic-field-wrapper">
+          
             <textarea class="dynamic-input tarih" rows="2">{{ misafir.giris_tarihi|date:'d.m.Y'|default:'' }}</textarea>
-          </div>
+          
         </td>
         <td>
-          <div class="dynamic-field-wrapper">
+          
             <textarea class="dynamic-input adsoyad" rows="2">{{ misafir.ad_soyad }}</textarea>
-          </div>
+          
         </td>
         <td></td>
         <td></td>
         <td>
-          <div class="dynamic-field-wrapper">
-            <textarea class="dynamic-input yakinlik" rows="2">{{ misafir.yakinlik | default:'' }}</textarea>
-          </div>
         </td>
       </tr>
     </tbody>
