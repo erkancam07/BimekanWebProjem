@@ -18,10 +18,7 @@ from django.views import generic
 
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
-<<<<<<< HEAD
 import math
-=======
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 
 # Excel dışa aktarımı için gerekli importlar
 from django.http import HttpResponse
@@ -34,7 +31,6 @@ from .models import SosyalGuvence
 from .forms import SosyalGuvenceForm
 from .models import Kurum
 
-<<<<<<< HEAD
 from .forms import StokEkleForm,GiyimIslemForm
 from .models import GiyimUrunu
 
@@ -208,27 +204,10 @@ def stok_raporu(request):
     }
     return render(request, "bimekan/stok_raporu.html", context) """
 
-=======
-from .forms import StokEkleForm
-from .models import GiyimUrunu
-
-def stok_raporu(request):
-    urunler = GiyimUrunu.objects.all().order_by("ad")
-    return render(request, "bimekan/stok_raporu.html", {"urunler": urunler})
-
-
-def stok_ekle(request):
-    form = StokEkleForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        return redirect("stok_raporu")  # Girişten sonra rapora yönlendirme
-    return render(request, "bimekan/stok_ekle.html", {"form": form})
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 
 @login_required
 def yardim_gecmisi(request, urun_id):
     urun = get_object_or_404(GiyimUrunu, pk=urun_id)
-<<<<<<< HEAD
 
     try:
         ayni_yardim_turu = IslemTuru.objects.get(ad__iexact='Ayni Yardım')
@@ -255,19 +234,12 @@ def yardim_gecmisi(request, urun_id):
         # Farklı kişi sayısını hesapla
         kisi_sayisi = yardimlar.values('misafir').distinct().count() # Yeni eklendi
     
-=======
-    yardimlar = GiyimIslem.objects.filter(urun=urun, islem_turu="Çıkış").order_by("-id")
-    toplam_miktar = yardimlar.aggregate(toplam=Sum("miktar"))["toplam"] or 0
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
     context = {
         "urun": urun,
         "yardimlar": yardimlar,
         "toplam_miktar": toplam_miktar,
-<<<<<<< HEAD
         "yardim_sayisi": yardim_sayisi, # Yeni eklendi
         "kisi_sayisi": kisi_sayisi,     # Yeni eklendi
-=======
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
         "title": f"{urun.ad} Yardım Geçmişi",
     }
     return render(request, "bimekan/yardim_gecmisi.html", context)
@@ -409,13 +381,6 @@ def misafir_export_excel(request, liste_turu):
     wb.save(response)
     return response
 
-<<<<<<< HEAD
-=======
-# Diğer view'larınız buraya devam eder...
-
-
-
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 def aylik_analiz(request):
     current_year = date.today().year # Mevcut yıl bilgisi
     aylik_veriler = [] # Her ayın istatistiklerini tutacak liste
@@ -509,11 +474,6 @@ def aylik_analiz(request):
     }
     return render(request, 'bimekan/aylik_analiz.html', context)
     
-<<<<<<< HEAD
-=======
-
-# Günlük yoklama fonksiyonu (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def gunluk_yoklama(request):
     aktif_kisiler = Misafir.objects.filter(durum='AKTIF')
@@ -557,11 +517,6 @@ def gunluk_yoklama(request):
             'current_section': 'gunluk-yoklama',
         })
 
-<<<<<<< HEAD
-=======
-
-# Yoklama listesi fonksiyonu (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def yoklama_listesi(request):
     arama = request.GET.get('q', '')
@@ -634,10 +589,6 @@ def yoklama_listesi(request):
         })
 
 
-<<<<<<< HEAD
-=======
-# Yoklama düzenle fonksiyonu (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def yoklama_duzenle(request, id):
     kayit = get_object_or_404(YoklamaKaydi, id=id)
@@ -656,10 +607,6 @@ def yoklama_duzenle(request, id):
         'durumlar': durumlar
     })
 
-<<<<<<< HEAD
-=======
-# Yoklama sil fonksiyonu (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def yoklama_sil(request, id):
     kayit = get_object_or_404(YoklamaKaydi, id=id)
@@ -667,10 +614,6 @@ def yoklama_sil(request, id):
     messages.success(request, "Yoklama kaydı silindi.")
     return redirect('yoklama_listesi')
 
-<<<<<<< HEAD
-=======
-# Yoklama AJAX fonksiyonu (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def yoklama_ajax(request):
     arama = request.GET.get('q', '')
@@ -703,10 +646,6 @@ def tc_kontrol_view(request):
     else:
         return JsonResponse({'status': 'yok'})
 
-<<<<<<< HEAD
-=======
-# Register View (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 class RegisterView(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
@@ -723,11 +662,6 @@ class RegisterView(generic.CreateView):
                 messages.error(self.request, f"'{label}' alanında hata: {error}")
         return super().form_invalid(form)
 
-<<<<<<< HEAD
-=======
-
-# Misafir kayıt ve giriş view (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def misafir_kayit_ve_giris(request):
     """
@@ -778,12 +712,6 @@ def misafir_kayit_ve_giris(request):
     }
     return render(request, 'bimekan/misafir_kayit_giris.html', context)
 
-<<<<<<< HEAD
-=======
-import math
-
-# Misafir listeleri view (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def misafir_listeleri(request, liste_turu='tumu'):
     base_queryset = Misafir.objects.all()
@@ -915,11 +843,6 @@ def misafir_listeleri(request, liste_turu='tumu'):
 
     return render(request, 'bimekan/misafir_listesi.html', context)
 
-<<<<<<< HEAD
-=======
-
-# Misafir detay view (değişiklik yok)
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def misafir_detay(request, pk):
     misafir = get_object_or_404(Misafir, pk=pk)
@@ -975,10 +898,6 @@ def misafir_detay(request, pk):
 
 from .models import GiyimIslem
 
-<<<<<<< HEAD
-=======
-# View to perform a transaction for an existing guest
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 @login_required
 def misafir_islem_yap(request, pk):
     misafir = get_object_or_404(Misafir, pk=pk)
@@ -991,7 +910,6 @@ def misafir_islem_yap(request, pk):
 
             islem_turu_adi_lower = islem.islem_turu.ad.lower()
 
-<<<<<<< HEAD
             # ❗ ESKİ AYNİ YARDIM BLOĞU BURADAN KALDIRILDI ❗
             # Stok güncelleme ve GiyimIslem oluşturma mantığı artık Islem modelinin save metodunda.
             # Dolayısıyla burada sadece islem.aciklama ve islem.tutar ayarı kalabilir.
@@ -1003,43 +921,15 @@ def misafir_islem_yap(request, pk):
                     islem.tutar = 0 # Ayni yardımların tutarı 0 olmalı
 
             # 🔹 Giriş kontrolü (aynı kaldı)
-=======
-            # 🔹 Ayni Yardım İşlemi
-            if islem_turu_adi_lower == 'ayni':
-                urun = form.cleaned_data.get('urun')
-                miktar = form.cleaned_data.get('miktar')
-
-                if urun and miktar:
-                    urun.mevcut_adet = max(urun.mevcut_adet - miktar, 0)
-                    urun.save()
-
-                    GiyimIslem.objects.create(
-                        urun=urun,
-                        miktar=miktar,
-                        alici=misafir,
-                        islem_turu="Çıkış",
-                        aciklama=f"Ayni yardım - {miktar} adet {urun.ad} verildi"
-                    )
-
-                    islem.aciklama = f"{miktar} adet {urun.ad} verildi"
-                    islem.tutar = 0
-
-            # 🔹 Giriş kontrolü
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
             if islem_turu_adi_lower == 'giriş' and misafir.durum == 'AKTIF':
                 messages.error(request, f"'{misafir.ad} {misafir.soyad}' zaten aktif durumda. Tekrar giriş yapılamaz.")
                 return redirect('misafir_detay', pk=misafir.pk)
 
-<<<<<<< HEAD
             # 🔹 Çıkış kontrolü (aynı kaldı)
-=======
-            # 🔹 Çıkış kontrolü
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
             if islem_turu_adi_lower == 'çıkış' and misafir.durum == 'PASIF':
                 messages.error(request, f"'{misafir.ad} {misafir.soyad}' zaten pasif durumda. Tekrar çıkış yapılamaz.")
                 return redirect('misafir_detay', pk=misafir.pk)
 
-<<<<<<< HEAD
             # 🔹 Giriş tarihi eşleştirme (aynı kaldı, Misafir modeli güncellendi)
             if islem_turu_adi_lower == 'giriş':
                 giris_tarihi = form.cleaned_data.get('giris_tarihi')
@@ -1074,41 +964,6 @@ def misafir_islem_yap(request, pk):
             misafir.save() # Misafir objesini kaydet (durum ve tarih güncellemeleri için)
             islem.save() # Islem objesini kaydet (bu, modeldeki save metodunu tetikler ve stoğu günceller)
             
-=======
-            # 🔹 Giriş tarihi eşleştirme
-            if islem_turu_adi_lower == 'giriş':
-                giris_tarihi = form.cleaned_data.get('giris_tarihi')
-                if giris_tarihi:
-                    islem.giris_tarihi = giris_tarihi
-                    misafir.giris_tarihi = giris_tarihi
-            elif islem_turu_adi_lower == 'çıkış':
-                cikis_tarihi = form.cleaned_data.get('cikis_tarihi')
-                if cikis_tarihi:
-                    islem.cikis_tarihi = cikis_tarihi
-
-            # 🔹 Durum değişikliği
-            if islem.islem_turu.durum_degistirir_mi and islem.islem_turu.yeni_durum:
-                misafir.durum = islem.islem_turu.yeni_durum
-
-                if islem_turu_adi_lower == 'çıkış':
-                    misafir.cikis_tarihi = form.cleaned_data.get('cikis_tarihi') or timezone.now()
-                    misafir.cikis_nedeni = form.cleaned_data.get('cikis_nedeni') or None
-                    if misafir.yatak_no:
-                        yatak = misafir.yatak_no
-                        yatak.dolu_mu = False
-                        yatak.save()
-                        misafir.yatak_no = None
-                        messages.info(request, f"'{misafir.ad} {misafir.soyad}' için yatak numarası boşaltıldı.")
-                    else:
-                        messages.warning(request, f"'{misafir.ad} {misafir.soyad}' için atanmış yatak bulunamadı.")
-
-                messages.info(request, f"'{misafir.ad} {misafir.soyad}' için '{islem.islem_turu.ad}' işlemi başarıyla yapıldı. Yeni durum: '{misafir.get_durum_display()}'.")
-            else:
-                messages.success(request, f"'{misafir.ad} {misafir.soyad}' için '{islem.islem_turu.ad}' işlemi başarıyla kaydedildi.")
-
-            misafir.save()
-            islem.save()
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
             return redirect('misafir_detay', pk=misafir.pk)
 
         else:
@@ -1287,10 +1142,6 @@ def sort_by_oda_no(yatak):
     except:
         return 0  # Hata varsa en alta koy
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 def yatak_ekle(request):
     form = YatakForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -1357,10 +1208,6 @@ def yatak_ekle(request):
         'kat_teras': kat_teras,
     })
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 def yatak_sil(request, pk):
     yatak = get_object_or_404(Yatak, pk=pk)
 
@@ -1373,10 +1220,6 @@ def yatak_sil(request, pk):
     messages.success(request, f"{yatak.yatak_numarasi} numaralı yatak başarıyla silindi.")
     return redirect('yatak_ekle')
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 def yatak_duzenle(request, pk):
     yatak = get_object_or_404(Yatak, pk=pk)
 
@@ -1399,12 +1242,6 @@ def yatak_duzenle(request, pk):
     # Normalde inline çalıştığı için GET ile bu sayfa render edilmiyor
     return redirect('yatak_ekle')
 
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 def sosyal_guvence_ekle(request):
     form = SosyalGuvenceForm(request.POST or None)
     if request.method == 'POST':
@@ -1431,10 +1268,6 @@ def sosyal_guvence_sil(request, pk):
         guvence.delete()
         return redirect('sosyal_guvence_ekle')
     
-<<<<<<< HEAD
-=======
-
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 def islem_detay(request):
     islem_turu = request.GET.get("islem_turu")
     kurum = request.GET.get("kurum")

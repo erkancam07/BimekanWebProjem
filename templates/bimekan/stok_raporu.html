@@ -1,6 +1,5 @@
 {% extends 'bimekan/base.html' %}
 {% block content %}
-<<<<<<< HEAD
 <div class="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto mb-8">
     <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
         <i class="fas fa-chart-bar text-indigo-600 mr-2"></i> Genel Stok Durumu
@@ -80,43 +79,3 @@
     </div>
 </div>
 {% endblock %}
-=======
-<div class="bg-white rounded-lg shadow p-6">
-  <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
-  <i class="fas fa-boxes text-indigo-600 mr-2"></i> Stok Durumu
-</h2>
-
-  <table class="min-w-full divide-y divide-gray-200 bg-white rounded-lg overflow-hidden shadow">
-    <thead class="bg-sky-100 text-gray-700">
-      <tr>
-        <th class="px-4 py-3 text-left text-sm font-semibold">Ürün Adı</th>
-        <th class="px-4 py-3 text-left text-sm font-semibold">Kategori</th>
-        <th class="px-4 py-3 text-right text-sm font-semibold">Mevcut Adet</th>
-        <th class="px-4 py-3 text-left text-sm font-semibold">Açıklama</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-gray-100 text-sm">
-      {% for urun in urunler %}
-        <tr class="{% if urun.mevcut_adet <= 5 %}bg-red-50{% else %}hover:bg-gray-50 transition{% endif %}">
-<td class="px-4 py-2">
-  <a href="{% url 'yardim_gecmisi' urun.pk %}" class="text-blue-600 hover:underline flex items-center gap-1">
-    <i class="fas fa-history text-sm text-indigo-500"></i>
-    {{ urun.ad }}
-  </a>
-</td>
-          <td class="px-4 py-2 text-gray-700">{{ urun.kategori }}</td>
-          <td class="px-4 py-2 text-right {% if urun.mevcut_adet <= 5 %}text-red-600 font-bold{% else %}text-gray-800{% endif %}">
-            {{ urun.mevcut_adet }}
-          </td>
-          <td class="px-4 py-2 text-gray-600 italic">{{ urun.aciklama|default:"-" }}</td>
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="4" class="text-center text-gray-500 py-6">Stoklarda hiç ürün bulunamadı.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-{% endblock %}
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17

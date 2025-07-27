@@ -78,7 +78,6 @@ urlpatterns = [
 
     path("islem-detay/", views.islem_detay, name="islem_detay"),
 
-<<<<<<< HEAD
      # Eskiden 'stok_ekle' olan, yeni ürün tanımlama için kullanacağımız view
     path('yeni_urun_tanimla/', views.yeni_urun_tanimla, name='yeni_urun_tanimla'),
     
@@ -87,10 +86,6 @@ urlpatterns = [
 
     path("stok/rapor/", views.stok_raporu, name="stok_raporu"),  
 
-=======
-    path("stok/ekle/", views.stok_ekle, name="stok_ekle"),
-    path("stok/rapor/", views.stok_raporu, name="stok_raporu"),  
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
     path('yardim-gecmisi/<int:urun_id>/', views.yardim_gecmisi, name='yardim_gecmisi'),
 
 

@@ -182,7 +182,6 @@
                                 </ul>
                             </li>
 <!-- 📦 Stok İşlemleri -->
-<<<<<<< HEAD
  <li class="sidebar-menu-item">
     <button onclick="toggleStokSubmenu()" class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center hover:bg-gray-100 text-gray-700">
         <i class="fas fa-box-open mr-2"></i> Stok İşlemleri
@@ -214,32 +213,6 @@
             </a>
         </li>
     </ul>
-=======
- {# #}
-<li class="sidebar-menu-item">
-  <button onclick="toggleStokSubmenu()" class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center hover:bg-gray-100 text-gray-700">
-    <i class="fas fa-box-open mr-2"></i> Stok İşlemleri
-    <i class="fas fa-chevron-down ml-auto text-sm transition-transform
-       {% if request.resolver_match.url_name == 'stok_ekle' or request.resolver_match.url_name == 'stok_raporu' %}rotate-180{% endif %}" id="chevron-stok"></i>
-  </button>
-
-  <ul id="submenu-stok" class="pl-6 mt-2 space-y-1 {% if request.resolver_match.url_name == 'stok_ekle' or request.resolver_match.url_name == 'stok_raporu' %}block{% else %}hidden{% endif %}">
-
-    <li>
-      <a href="{% url 'stok_ekle' %}"
-         class="{% if request.resolver_match.url_name == 'stok_ekle' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
-        📥 Stok Girişi
-      </a>
-    </li>
-
-    <li>
-      <a href="{% url 'stok_raporu' %}"
-         class="{% if request.resolver_match.url_name == 'stok_raporu' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
-        📊 Stok Durumu
-      </a>
-    </li>
-  </ul>
->>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 </li>
                             {# /YENİ EKLENEN #}
 
