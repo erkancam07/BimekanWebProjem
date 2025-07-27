@@ -1,62 +1,64 @@
 {% if not yatak.aktif_misafirler %}
-<!-- 🛏️ Boş Yatak Kartı -->
-<div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-4 w-full">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 w-full">
 
-  <!-- Yatak No -->
-  <div class="flex-shrink-0 w-32 text-sm font-semibold text-gray-800">
-    🛏️ {{ yatak.yatak_numarasi }}
-  </div>
+    <div class="flex-shrink-0 text-sm font-semibold text-gray-800">
+        🛏️ {{ yatak.yatak_numarasi }}
+        <div class="text-xs text-gray-400 font-normal mt-1">
+            Yatak Boş
+        </div>
+    </div>
 
-  <!-- Bilgi Alanı -->
-  <div class="flex-1 min-w-0 text-sm text-gray-400">
-    Bu yatağa aktif misafir atanmadı.
-  </div>
+    <div class="flex flex-col gap-2 w-full sm:w-auto">
 
-  <!-- Kaydet & Sil Formları -->
-  <div class="flex-shrink-0 flex items-center gap-2 flex-wrap md:flex-nowrap">
-    <form method="post" class="flex items-center gap-2">
-      {% csrf_token %}
-      <input type="hidden" name="duzenle_id" value="{{ yatak.pk }}">
-      <input type="text" name="yatak_numarasi" value="{{ yatak.yatak_numarasi }}"
-             class="w-28 rounded-md border-2 border-gray-300 p-1 text-xs text-gray-700"
-             placeholder="Yatak No">
-      <button type="submit"
-              class="px-3 py-1 bg-sky-50 text-sky-700 rounded text-xs hover:bg-sky-100 border border-sky-200 transition">
-        💾 Kaydet
-      </button>
-    </form>
+        <form method="post" class="w-full">
+            {% csrf_token %}
+            <input type="hidden" name="duzenle_id" value="{{ yatak.pk }}">
+            <input type="text" name="yatak_numarasi" value="{{ yatak.yatak_numarasi }}"
+                   class="w-full rounded-md border-2 border-gray-300 p-1 text-xs text-gray-700"
+                   placeholder="Yatak No">
+        </form>
 
-    <form method="post" action="{% url 'yatak_sil' yatak.pk %}"
-          onsubmit="return confirm('Bu yatağı silmek istediğinize emin misiniz?')">
-      {% csrf_token %}
-      <button type="submit"
-              class="px-3 py-1 bg-red-50 text-red-700 rounded text-xs hover:bg-red-100 border border-red-200 transition">
-        🗑️ Sil
-      </button>
-    </form>
-  </div>
+        <form method="post" class="w-full">
+            {% csrf_token %}
+            <input type="hidden" name="duzenle_id" value="{{ yatak.pk }}">
+            <button type="submit"
+                    class="w-full px-3 py-1 bg-sky-50 text-sky-700 rounded text-xs hover:bg-sky-100 border border-sky-200 transition whitespace-nowrap">
+                <span class="flex items-center justify-center">
+                    <i class="fas fa-save mr-0 sm:mr-1"></i> <span class="hidden sm:inline">Kaydet</span>
+                </span>
+            </button>
+        </form>
+
+        <form method="post" action="{% url 'yatak_sil' yatak.pk %}"
+              onsubmit="return confirm('Bu yatağı silmek istediğinize emin misiniz?');"
+              class="w-full">
+            {% csrf_token %}
+            <button type="submit"
+                    class="w-full px-3 py-1 bg-red-50 text-red-700 rounded text-xs hover:bg-red-100 border border-red-200 transition whitespace-nowrap">
+                <span class="flex items-center justify-center">
+                    <i class="fas fa-trash-alt mr-0 sm:mr-1"></i> <span class="hidden sm:inline">Sil</span>
+                </span>
+            </button>
+        </form>
+    </div>
 
 </div>
 
 {% else %}
-<!-- 🛏️ Dolu Yatak Kartı -->
 <div class="flex flex-col items-center justify-center w-full py-3 text-center">
 
-  <!-- Yatak No -->
-  <div class="text-sm font-bold text-gray-800 mb-2">
-    🛏️ {{ yatak.yatak_numarasi }}
-  </div>
+    <div class="text-sm font-bold text-gray-800 mb-2">
+        🛏️ {{ yatak.yatak_numarasi }}
+    </div>
 
-  <!-- Misafir Bilgisi -->
-  {% for misafir in yatak.aktif_misafirler %}
-  <div class="text-sm text-gray-700">
-    <div class="text-base font-semibold text-gray-800">{{ misafir.ad }} {{ misafir.soyad }}</div>
-    <div class="text-xs text-gray-500 mt-1">T.C. No: {{ misafir.tc_kimlik_no }}</div>
-  </div>
-  {% endfor %}
+    {% for misafir in yatak.aktif_misafirler %}
+    <div class="text-sm text-gray-700">
+        <div class="text-base font-semibold text-gray-800">{{ misafir.ad }} {{ misafir.soyad }}</div>
+        <div class="text-xs text-gray-500 mt-1">T.C. No: {{ misafir.tc_kimlik_no }}</div>
+    </div>
+    {% endfor %}
 
-  <!-- Uyarı -->
-  <div class="mt-2 text-xs text-red-500">Aktif misafir var</div>
+    <div class="mt-2 text-xs text-red-500">Aktif kişi var</div>
 
 </div>
 {% endif %}

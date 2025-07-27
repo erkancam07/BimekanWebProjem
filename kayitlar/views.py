@@ -36,6 +36,7 @@ from .models import GiyimUrunu
 
 from django.db import IntegrityError # unique_together hatasını yakalamak için
 from django.forms import ValidationError # Formun clean metodundan gelen hata için
+import calendar # calendar modülünü import ediyoruz
 
 # --- 1. Yeni Ürün Tanımlama View'ı (Mevcut 'stok_ekle' view'ının yerine geçecek ve adı değişecek) ---
 # Bu view, sadece yeni bir GiyimUrunu (örn: Terlik-Ayakkabı kombinasyonu) tanımlamak içindir.
@@ -146,64 +147,6 @@ def stok_raporu(request):
         'son_islemler': tum_stok_hareketleri[:50],
     }
     return render(request, "bimekan/stok_raporu.html", context)
-
-""" def stok_raporu(request):
-    # Genel stok durumu (her bir GiyimUrunu kaydı, kendi toplam mevcut adetini tutar)
-    genel_stok = GiyimUrunu.objects.all().order_by('ad__isim', 'kategori')
-
-    # 1. GiyimIslem'den gelen stok girişleri
-    # GiyimIslem'deki islem_turu alanı büyük ihtimalle 'Giriş' veya benzeri bir string tutuyordur.
-    stok_girisleri = GiyimIslem.objects.filter(islem_turu='Giriş').order_by('-tarih')
-    
-    # 2. Islem modelinden gelen ayni yardım çıkışları
-    ayni_yardim_turu = None
-    try:
-        ayni_yardim_turu = IslemTuru.objects.get(ad__iexact='Ayni Yardım')
-    except IslemTuru.DoesNotExist:
-        pass
-
-    stok_cikis_islemleri = Islem.objects.none()
-    if ayni_yardim_turu:
-        stok_cikis_islemleri = Islem.objects.filter(
-            islem_turu=ayni_yardim_turu,
-            urun__isnull=False,
-            miktar__isnull=False
-        ).order_by('-islem_zamani')
-    
-    tum_stok_hareketleri = []
-
-    for giris in stok_girisleri:
-        tum_stok_hareketleri.append({
-            'tarih': giris.tarih,
-            'urun_ad': giris.urun.ad.isim,
-            'urun_kategori': giris.urun.kategori,
-            'miktar': giris.miktar,
-            'islem_turu': 'Giriş',
-            'ilgili_kisi': giris.kaynak_firma if giris.kaynak_firma else 'N/A', # <<< BURASI GÜNCELLENDİ
-            'aciklama': giris.aciklama,
-            'model_type': 'GiyimIslem'
-        })
-
-    for cikis in stok_cikis_islemleri:
-        tum_stok_hareketleri.append({
-            'tarih': cikis.islem_zamani,
-            'urun_ad': cikis.urun.ad.isim,
-            'urun_kategori': cikis.urun.kategori,
-            'miktar': cikis.miktar,
-            'islem_turu': 'Ayni Yardım Çıkışı',
-            'ilgili_kisi': f"{cikis.misafir.ad} {cikis.misafir.soyad}",
-            'aciklama': cikis.aciklama,
-            'model_type': 'Islem'
-        })
-
-    tum_stok_hareketleri.sort(key=lambda x: x['tarih'], reverse=True)
-
-    context = {
-        'genel_stok': genel_stok,
-        'son_islemler': tum_stok_hareketleri[:50],
-    }
-    return render(request, "bimekan/stok_raporu.html", context) """
-
 
 @login_required
 def yardim_gecmisi(request, urun_id):
@@ -707,7 +650,7 @@ def misafir_kayit_ve_giris(request):
 
     context = {
         'form': form,
-        'title': 'Yeni Misafir Kayıt & Giriş',
+        'title': 'Yeni Kişi Kaydı',
         'current_section': 'new-misafir-form',
     }
     return render(request, 'bimekan/misafir_kayit_giris.html', context)
@@ -1137,23 +1080,54 @@ from collections import defaultdict
 def sort_by_oda_no(yatak):
     try:
         oda_no = int(yatak.yatak_numarasi.split('-')[2])
-        # return -oda_no   Büyükten küçüğe sıralamak için negatif
-        return oda_no  # Küçükten Büyüğpe sıralamak için negatif
+        return oda_no
     except:
-        return 0  # Hata varsa en alta koy
+        return 0
 
 def yatak_ekle(request):
     form = YatakForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        return redirect('yatak_ekle')
+    if request.method == 'POST':
+        if 'duzenle_id' in request.POST:
+            # Düzenleme işlemi
+            yatak_id = request.POST.get('duzenle_id')
+            yatak = get_object_or_404(Yatak, pk=yatak_id)
+            yatak.yatak_numarasi = request.POST.get('yatak_numarasi')
+            yatak.save()
+            # Yatağın doluluk durumunu burada güncelleyebilirsiniz,
+            # eğer yatak numarası değişirse doluluk durumu da etkilenebilir.
+            # Örneğin: yatak.dolu_mu = yatak.aktif_misafirler.exists()
+            return redirect('yatak_ekle') # Yatak_ekle sayfasına geri dön
+        else:
+            # Yeni yatak ekleme işlemi
+            form = YatakForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('yatak_ekle') # Yatak_ekle sayfasına geri dön
 
-    # Tüm yatakları al
+    # --- Dolu ve boş yatak sayılarını hesaplama ---
+    # **ÖNEMLİ:** Yatak modelinizdeki dolu/boş durumunu gösteren doğru alanı/mantığı kullanın.
+    # EN BASİT VE PERFORMANSLI YÖNTEM (Yatak modelinizde 'dolu_mu' adında boolean bir alan varsa):
+    dolu_yatak_sayisi = Yatak.objects.filter(dolu_mu=True).count()
+    bos_yatak_sayisi = Yatak.objects.filter(dolu_mu=False).count()
+    
+    # ALTERNATİF YÖNTEM (Eğer 'dolu_mu' alanı yoksa ve 'aktif_misafirler' ilişkisiyle belirleniyorsa):
+    # Not: Bu yöntem, her yatak için Misafir tablosunu kontrol ettiği için daha az performanslı olabilir.
+    # from django.db.models import OuterRef, Exists
+    # yataklar_with_misafir_status = Yatak.objects.annotate(
+    #     has_active_misafir = Exists(Misafir.objects.filter(yatak_no=OuterRef('pk'), durum='AKTIF'))
+    # )
+    # dolu_yatak_sayisi = yataklar_with_misafir_status.filter(has_active_misafir=True).count()
+    # bos_yatak_sayisi = yataklar_with_misafir_status.filter(has_active_misafir=False).count()
+
+    toplam_yatak_sayisi = Yatak.objects.count()
+    # --- Hesaplama Sonu ---
+
+    # Tüm yatakları al ve aktif misafirlerini ata (mevcut kodunuzdan)
     yataklar = Yatak.objects.all()
     for yatak in yataklar:
         yatak.aktif_misafirler = Misafir.objects.filter(yatak_no=yatak, durum='AKTIF')
 
-    # Katlara göre ayır
+    # Katlara göre ayır ve sırala (mevcut kodunuzdan)
     kat_1_k, kat_1_b = [], []
     kat_2_k, kat_2_b = [], []
     kat_3_k, kat_3_b = [], []
@@ -1162,32 +1136,19 @@ def yatak_ekle(request):
     for yatak in yataklar:
         kod = yatak.yatak_numarasi.split('-')
         if len(kod) != 3:
-            continue  # Geçersiz kod varsa atla
+            continue
 
         kat, tip, _ = kod
-        # # # # # BURADA DEĞİŞİKLİK YAPILMALI # # # # #
-        tip_upper = tip.upper() # Tip bilgisini büyük harfe çevirelim
+        tip_upper = tip.upper()
 
-        if kat == '1' and tip_upper != 'T': # 1. kat, Teras olmayanlar
+        if kat == '1' and tip_upper != 'T':
             (kat_1_k if tip_upper == 'K' else kat_1_b).append(yatak)
-        elif kat == '2' and tip_upper != 'T': # 2. kat, Teras olmayanlar
+        elif kat == '2' and tip_upper != 'T':
             (kat_2_k if tip_upper == 'K' else kat_2_b).append(yatak)
-        elif kat == '3' and tip_upper != 'T': # 3. kat, Teras olmayanlar
+        elif kat == '3' and tip_upper != 'T':
             (kat_3_k if tip_upper == 'K' else kat_3_b).append(yatak)
-        
-        # Tip bilgisi 'T' ise teras olarak kabul et
         elif tip_upper == 'T':
             kat_teras.append(yatak)
-        # else:
-            # logger.warning(f"Bilinmeyen kat/tip kombinasyonu atlandı: {yatak.yatak_numarasi}")
-        # # # # # DEĞİŞİKLİK BİTİŞİ # # # # #
-
-    # Oda numarasına göre küçükten büyüğe sırala
-    def sort_by_oda_no(yatak):
-        try:
-            return int(yatak.yatak_numarasi.split('-')[2])
-        except:
-            return 0
 
     kat_1_k = sorted(kat_1_k, key=sort_by_oda_no)
     kat_1_b = sorted(kat_1_b, key=sort_by_oda_no)
@@ -1206,7 +1167,23 @@ def yatak_ekle(request):
         'kat_3_k': kat_3_k,
         'kat_3_b': kat_3_b,
         'kat_teras': kat_teras,
+        # Yeni eklenen istatistikler
+        'dolu_yatak_sayisi': dolu_yatak_sayisi,
+        'bos_yatak_sayisi': bos_yatak_sayisi,
+        'toplam_yatak_sayisi': toplam_yatak_sayisi,
     })
+
+# yatak_sil fonksiyonu (Değişiklik yok)
+def yatak_sil(request, pk):
+    yatak = get_object_or_404(Yatak, pk=pk)
+    if request.method == 'POST':
+        # Silmeden önce yatağın boş olup olmadığını kontrol edebilirsiniz
+        # if yatak.aktif_misafirler.exists(): # Eğer ManyToMany alanı varsa
+        #    # Hata mesajı göster veya silme işlemine izin verme
+        #    pass
+        yatak.delete()
+        return redirect('yatak_ekle') # Yatak_ekle sayfasına geri dön
+    return redirect('yatak_ekle') # GET isteğinde de redirect
 
 def yatak_sil(request, pk):
     yatak = get_object_or_404(Yatak, pk=pk)
@@ -1271,22 +1248,47 @@ def sosyal_guvence_sil(request, pk):
 def islem_detay(request):
     islem_turu = request.GET.get("islem_turu")
     kurum = request.GET.get("kurum")
-    tarih1 = request.GET.get("tarih1")
-    tarih2 = request.GET.get("tarih2")
-    
-    
+
+    # --- Başlangıç ve Bitiş Tarihleri için Güncellenmiş Mantık (Ay Başı ve Ay Sonu) ---
     bugun = date.today()
+    
+    # Ayın ilk gününü bul
     ay_basi = bugun.replace(day=1)
+    
+    # Ayın son gününü bul
+    # calendar.monthrange(yıl, ay) bize (haftanın günü, ayın gün sayısı) döner
+    son_gun = calendar.monthrange(bugun.year, bugun.month)[1]
+    ay_sonu = bugun.replace(day=son_gun)
 
-    filtre = Q(islem_zamani__date__gte=ay_basi)  # İlk yüklendiğinde bu ay
+    # request.GET'te tarih1 veya tarih2 var mı kontrol et
+    # Eğer yoksa, varsayılan olarak ayın başı ve ayın sonu tarihlerini atıyoruz.
+    tarih1_str = request.GET.get("tarih1")
+    tarih2_str = request.GET.get("tarih2")
 
-    if tarih1 and tarih2:
-        filtre &= Q(islem_zamani__date__range=[tarih1, tarih2])
-    elif tarih1:
-        filtre &= Q(islem_zamani__date__gte=tarih1)
-    elif tarih2:
-        filtre &= Q(islem_zamani__date__lte=tarih2)
+    if not tarih1_str:
+        tarih1_str = ay_basi.isoformat() # Ayın başını varsayılan olarak ata
+    
+    if not tarih2_str:
+        tarih2_str = ay_sonu.isoformat() # Ayın sonunu varsayılan olarak ata
 
+    # QuerySet için temel filtreyi tanımla
+    filtre = Q() 
+
+    # Tarih filtrelerini uygula
+    try:
+        baslangic_tarihi_obj = date.fromisoformat(tarih1_str)
+        bitis_tarihi_obj = date.fromisoformat(tarih2_str)
+        
+        # Bitiş tarihini bir gün ileri alıyoruz ki seçilen günün sonuna kadar olan işlemleri kapsasın
+        bitis_tarihi_dahil = bitis_tarihi_obj + timedelta(days=1) 
+
+        filtre &= Q(islem_zamani__date__gte=baslangic_tarihi_obj)
+        filtre &= Q(islem_zamani__date__lt=bitis_tarihi_dahil) # __lt kullanıyoruz
+    except ValueError:
+        # Tarih formatı hatası olursa veya geçersiz tarih gelirse, filtreleme yapma
+        pass 
+
+    # Diğer filtreleme koşullarını uygula
     if islem_turu:
         filtre &= Q(islem_turu_id=islem_turu)
     
@@ -1296,11 +1298,17 @@ def islem_detay(request):
     islemler = Islem.objects.filter(filtre).order_by("-islem_zamani")
     
     toplam_tutar = islemler.aggregate(Sum("tutar"))["tutar__sum"] or 0
+    
     context = {
         "islemler": islemler,
         "islem_turleri": IslemTuru.objects.all(),
         "kurumlar": Kurum.objects.all(),
         "toplam_tutar": toplam_tutar,
-        "current_section": "islem_detay"
+        "current_section": "islem_detay",
+        # HTML formuna varsayılan olarak gönderilecek tarihler
+        "varsayilan_tarih1": tarih1_str, 
+        "varsayilan_tarih2": tarih2_str,
+        "secili_islem_turu": islem_turu, 
+        "secili_kurum": kurum,           
     }
     return render(request, "bimekan/islem_detay.html", context)

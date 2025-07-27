@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'kayitlar',
+    'widget_tweaks',
     'import_export',
     'django.contrib.admin',
     'django.contrib.auth',

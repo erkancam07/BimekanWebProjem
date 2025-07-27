@@ -28,6 +28,21 @@
         {% endif %}
     </form>
 
+    <div class="flex flex-col sm:flex-row justify-around items-center mb-6 py-2 bg-gray-100 rounded-lg shadow-sm">
+        <div class="text-center px-4 py-1"> {# Adjusted padding here #}
+            <p class="text-sm font-semibold text-gray-600 mb-0.5">Toplam Yatak:</p> {# Reduced mb #}
+            <p class="text-xl font-extrabold text-blue-600 mb-0 leading-none">{{ toplam_yatak_sayisi }}</p> {# Removed mb, added leading-none #}
+        </div>
+        <div class="text-center px-4 py-1 mt-2 sm:mt-0"> {# Adjusted padding and top margin for small screens #}
+            <p class="text-sm font-semibold text-gray-600 mb-0.5">Dolu Yatak:</p> {# Reduced mb #}
+            <p class="text-xl font-extrabold text-red-600 mb-0 leading-none">{{ dolu_yatak_sayisi }}</p> {# Removed mb, added leading-none #}
+        </div>
+        <div class="text-center px-4 py-1 mt-2 sm:mt-0"> {# Adjusted padding and top margin for small screens #}
+            <p class="text-sm font-semibold text-gray-600 mb-0.5">Boş Yatak:</p> {# Reduced mb #}
+            <p class="text-xl font-extrabold text-green-600 mb-0 leading-none">{{ bos_yatak_sayisi }}</p> {# Removed mb, added leading-none #}
+        </div>
+    </div>
+
     <div class="flex flex-wrap gap-3 mb-6 p-3 bg-gray-50 rounded-md border border-gray-200">
         <button class="filter-btn bg-sky-100 text-sky-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition duration-150 ease-in-out"
                 data-filter="tum">Tüm Yataklar</button>
@@ -154,7 +169,7 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() { 
+    document.addEventListener('DOMContentLoaded', function() {
         const filterButtons = document.querySelectorAll('.filter-btn');
         const yatakCards = document.querySelectorAll('.yatak-card');
 
@@ -162,17 +177,16 @@
             btn.addEventListener('click', () => {
                 const filter = btn.dataset.filter;
 
-                
                 filterButtons.forEach(b => {
                     b.classList.remove('bg-blue-600', 'text-white', 'bg-red-600', 'text-white', 'bg-green-600', 'text-white');
                     if (b.dataset.filter === 'tum') b.classList.add('bg-sky-100', 'text-sky-700');
                     else if (b.dataset.filter === 'dolu') b.classList.add('bg-red-100', 'text-red-700');
                     else if (b.dataset.filter === 'bos') b.classList.add('bg-green-100', 'text-green-700');
                 });
-                
+
                 if (filter === 'tum') {
                     btn.classList.add('bg-blue-600', 'text-white');
-                    btn.classList.remove('bg-sky-100', 'text-sky-700'); 
+                    btn.classList.remove('bg-sky-100', 'text-sky-700');
                 } else if (filter === 'dolu') {
                     btn.classList.add('bg-red-600', 'text-white');
                     btn.classList.remove('bg-red-100', 'text-red-700');
