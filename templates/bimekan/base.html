@@ -36,11 +36,16 @@
             <div>
                 <h1 class="text-4xl font-extrabold tracking-tight">Bimekan <span class="text-indigo-300">Kişi Kayıt</span></h1>
                 <p class="mt-2 text-lg text-gray-300">Bimekan kişi kayıt ve takip uygulaması.</p>
+                
             </div>
         </div>
-        
+            <div>
+                <p class="mt-2">Tasarlayan ve Kodlayan: <span class="font-semibold text-blue-600">Erkan ÇAM</span></p>
+            </div>
         {# Kullanıcı Bilgisi ve Aksiyonları #}
         <div class="flex items-center space-x-4">
+            
+
             {% if user.is_authenticated %}
                 <div class="text-white text-lg flex items-center bg-gray-700 px-4 py-2 rounded-full shadow-inner">
                     <i class="fas fa-user-circle mr-2 text-indigo-300"></i> Hoş Geldin, <strong class="ml-1">{{ user.username }}</strong>
