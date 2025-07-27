@@ -1,0 +1,178 @@
+{% extends 'bimekan/base.html' %}
+{% load static %} {# Eğer static dosyalarınız için {% static %} kullanıyorsanız bu satır gerekli #}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6 max-w-xl mx-auto">
+    <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-teal-100 via-teal-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-exchange-alt text-teal-600 mr-2"></i> Stok Hareketi Ekle
+    </h2>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        {# Genel hata mesajları #}
+        {% if form.non_field_errors %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Hata!</strong>
+                <span class="block sm:inline">{{ form.non_field_errors }}</span>
+            </div>
+        {% endif %}
+
+        {# Ürün Seçimi #}
+        <div class="mb-4">
+            <label for="{{ form.urun.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.urun.label }}
+            </label>
+            {{ form.urun }}
+            {% if form.urun.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.urun.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        {# Miktar #}
+        <div class="mb-4">
+            <label for="{{ form.miktar.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.miktar.label }}
+            </label>
+            {{ form.miktar }}
+            {% if form.miktar.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.miktar.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        {# İşlem Türü Seçimi #}
+        <div class="mb-4">
+            <label for="{{ form.islem_turu.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.islem_turu.label }}
+            </label>
+            {{ form.islem_turu }}
+            {% if form.islem_turu.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.islem_turu.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        {# KAYNAK FİRMA ALANI - JavaScript ile yönetilecek #}
+        <div id="kaynak_firma_field" class="mb-4" style="display: none;">
+            <label for="{{ form.kaynak_firma.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.kaynak_firma.label }}
+            </label>
+            {{ form.kaynak_firma }}
+            {% if form.kaynak_firma.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.kaynak_firma.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        {# KURUM ALANI - JavaScript ile yönetilecek #}
+        <div id="kurum_field" class="mb-4" style="display: none;">
+            <label for="{{ form.kurum.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.kurum.label }}
+            </label>
+            {{ form.kurum }}
+            {% if form.kurum.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.kurum.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        {# ALICI (Misafir) ALANI - Bu artık sürekli gizli kalmalı ve bu formda kullanılmamalı #}
+        <div id="alici_field" class="mb-4" style="display: none;">
+            <label for="{{ form.alici.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.alici.label }}
+            </label>
+            {{ form.alici }}
+            {% if form.alici.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.alici.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        {# Açıklama #}
+        <div class="mb-4">
+            <label for="{{ form.aciklama.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.aciklama.label }}
+            </label>
+            {{ form.aciklama }}
+            {% if form.aciklama.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.aciklama.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div class="text-right">
+            <button type="submit" class="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition">
+                <i class="fas fa-save mr-2"></i> Stok Hareketi Kaydet
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const islemTuruSelect = document.getElementById('id_giyim_islem_turu'); 
+        const kaynakFirmaFieldDiv = document.getElementById('kaynak_firma_field');
+        const kurumFieldDiv = document.getElementById('kurum_field');
+        const aliciFieldDiv = document.getElementById('alici_field'); 
+
+        const kaynakFirmaInput = document.getElementById('id_giyim_kaynak_firma'); 
+        const kurumSelect = document.getElementById('id_giyim_kurum'); 
+        const aliciSelect = document.getElementById('id_giyim_alici_misafir'); 
+
+        // !!! BURADA DEBUG İÇİN GEÇİCİ LOGLAR VAR !!!
+        console.log("DOM içeriği yüklendi.");
+        console.log("islemTuruSelect bulundu mu?", islemTuruSelect ? "Evet" : "Hayır");
+        if (islemTuruSelect) {
+            console.log("islemTuruSelect mevcut değeri:", islemTuruSelect.value);
+        } else {
+            console.error("HATA: 'id_giyim_islem_turu' ID'li select elemanı bulunamadı!");
+        }
+        console.log("kaynakFirmaFieldDiv bulundu mu?", kaynakFirmaFieldDiv ? "Evet" : "Hayır");
+        console.log("kurumFieldDiv bulundu mu?", kurumFieldDiv ? "Evet" : "Hayır");
+
+        function toggleFields() {
+            console.log("toggleFields fonksiyonu çalıştı."); 
+            const selectedValue = islemTuruSelect ? islemTuruSelect.value : ""; // islemTuruSelect null olabilir mi diye kontrol
+            console.log("Seçilen İşlem Türü (toggleFields içinde):", selectedValue); 
+
+            // Tüm ilgili alanları gizle ve zorunluluğunu kaldır
+            if (kaynakFirmaFieldDiv) kaynakFirmaFieldDiv.style.display = 'none';
+            if (kurumFieldDiv) kurumFieldDiv.style.display = 'none';
+            if (aliciFieldDiv) aliciFieldDiv.style.display = 'none'; 
+
+            if (kaynakFirmaInput) kaynakFirmaInput.removeAttribute('required');
+            if (kurumSelect) kurumSelect.removeAttribute('required');
+            if (aliciSelect) aliciSelect.removeAttribute('required');
+
+            // Değerleri temizle (opsiyonel ama iyi bir pratik)
+            if (kaynakFirmaInput) kaynakFirmaInput.value = '';
+            if (kurumSelect) {
+                if (kurumSelect.options && kurumSelect.options.length > 0) {
+                    kurumSelect.value = ''; 
+                }
+            }
+            if (aliciSelect) {
+                if (aliciSelect.options && aliciSelect.options.length > 0) {
+                    aliciSelect.value = ''; 
+                }
+            }
+
+            // Seçilen işlem türüne göre alanları göster ve zorunlu yap
+            if (selectedValue === 'Giriş') {
+                console.log("'Giriş' seçildi. Kaynak Firma gösteriliyor.");
+                if (kaynakFirmaFieldDiv) kaynakFirmaFieldDiv.style.display = 'block';
+                if (kaynakFirmaInput) kaynakFirmaInput.setAttribute('required', 'required');
+            } else if (selectedValue === 'Çıkış') {
+                console.log("'Çıkış' seçildi. Kurum gösteriliyor.");
+                if (kurumFieldDiv) kurumFieldDiv.style.display = 'block';
+                if (kurumSelect) kurumSelect.setAttribute('required', 'required');
+            } else {
+                console.log("Hiçbir işlem türü seçilmedi veya bilinmeyen değer:", selectedValue);
+            }
+        }
+
+        // islemTuruSelect'in varlığını kontrol etmeden event listener eklemeyin
+        if (islemTuruSelect) {
+            toggleFields(); // Sayfa yüklendiğinde bir kez çalıştır
+            islemTuruSelect.addEventListener('change', toggleFields);
+        } else {
+            console.error("HATA: islemTuruSelect bulunamadığı için olay dinleyici eklenemedi.");
+        }
+    });
+</script>
+{% endblock %}

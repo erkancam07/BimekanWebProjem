@@ -1,0 +1,181 @@
+{% extends 'bimekan/base.html' %}
+{% block content %}
+
+<div class="max-w-5xl mx-auto mt-6 bg-white shadow-md rounded-xl p-6">
+
+    <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-list-alt mr-2 text-blue-600"></i> Yoklama Kayıtları
+    </h2>
+
+    {# 🔍 Filtrele Kutusu #}
+    <form method="GET" class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-end mt-3">
+        {# Input alanlarını daraltmak için md:col-span-1 ve w-full kullanıldı #}
+        <div class="md:col-span-1">
+            <label for="search-query-input" class="sr-only">Ad, Soyad, TC...</label>
+            <input type="text" id="search-query-input" name="q" value="{{ arama }}" placeholder="Ad, Soyad, TC..."
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-base focus:outline-none focus:ring focus:border-blue-500"
+            />
+        </div>
+
+        <div class="md:col-span-1">
+            <label for="tarih-input" class="sr-only">Tarih Seçiniz</label>
+            <input type="date" id="tarih-input" name="tarih" value="{{ tarih|default:today }}"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-base focus:outline-none focus:ring focus:border-blue-500"
+            />
+        </div>
+
+        {# Filtrele Butonu CSS'i güncellendi #}
+        <div class="md:col-span-1">
+            <button type="submit" id="filtrele-btn"
+                    class="w-full inline-flex items-center justify-center px-4 py-2 border border-blue-200 
+                           text-sm font-medium rounded-md shadow-sm 
+                           bg-blue-50 text-blue-700 
+                           hover:bg-blue-100 hover:text-blue-800 
+                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                <i class="fas fa-filter mr-2"></i> Filtrele
+            </button>
+        </div>
+    </form>
+
+    {# 🔁 Hızlı Filtre Butonları (Stilleri güncellendi) #}
+    <div class="mt-4 flex flex-wrap gap-3 text-sm">
+    {% comment %} Bugün butonu {% endcomment %}
+    {% with today_param=today|urlencode %} {# Tarihi URL uyumlu hale getir #}
+    <a href="?tarih={{ today }}"
+       class="inline-flex items-center justify-center px-4 py-2 border border-blue-200 
+              text-sm font-medium rounded-md shadow-sm 
+              bg-blue-50 text-blue-700 
+              hover:bg-blue-100 hover:text-blue-800 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition
+              {% if request.GET.tarih == today_param and not request.GET.baslangic and not request.GET.bitis %} 
+                  !bg-blue-400 !text-white !border-blue-400 !shadow-md 
+              {% endif %}"> {# bg-blue-600 ve border-blue-600 yerine bg-blue-400 ve border-blue-400 #}
+        <i class="fas fa-calendar-day mr-2"></i> Bugün
+    </a>
+    {% endwith %}
+
+    {% comment %} Son 7 Gün butonu {% endcomment %}
+    {% with seven_days_ago_param=seven_days_ago|urlencode bitis_param=today|urlencode %}
+    <a href="?baslangic={{ seven_days_ago }}&bitis={{ today }}"
+       class="inline-flex items-center justify-center px-4 py-2 border border-blue-200 
+              text-sm font-medium rounded-md shadow-sm 
+              bg-blue-50 text-blue-700 
+              hover:bg-blue-100 hover:text-blue-800 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition
+              {% if request.GET.baslangic == seven_days_ago_param and request.GET.bitis == bitis_param %} 
+                  !bg-blue-400 !text-white !border-blue-400 !shadow-md 
+              {% endif %}"> {# bg-blue-600 ve border-blue-600 yerine bg-blue-400 ve border-blue-400 #}
+        <i class="fas fa-calendar-week mr-2"></i> Son 7 Gün
+    </a>
+    {% endwith %}
+
+    {% comment %} Ay bazında filtre butonu (mevcutsa) {% endcomment %}
+    {# Eğer ay bazında bir filtreleme butonu ekleyecekseniz, benzer mantıkla buraya ekleyebilirsiniz. #}
+</div>
+
+    {# 📋 Kayıt Tablosu #}
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left bg-blue-50 shadow-sm" id="kayit-tablosu"> {# Tabloya id eklendi #}
+            <thead>
+                <tr class="text-gray-600 border-b">
+                    <th class="py-3 px-2">Tarih</th>
+                    <th class="py-3 px-2">Ad Soyad</th>
+                    <th class="py-3 px-2">TC No</th>
+                    <th class="py-3 px-2">Yatak No</th>
+                    <th class="py-3 px-2">Durum</th>
+                    <th class="py-3 px-2 text-right">İşlem</th>
+                </tr>
+            </thead>
+            <tbody id="liste-govdesi"> {# tbody'ye id eklendi #}
+                {% for kayit in kayitlar %}
+                <tr class="border-b 
+                    {% if kayit.durum.ad|lower == 'var' %}bg-green-50
+                    {% elif kayit.durum.ad|lower == 'yok' %}bg-red-50
+                    {% else %}bg-white
+                    {% endif %} hover:bg-blue-50 transition duration-150">
+
+                    <td class="py-2 px-2">{{ kayit.tarih|date:"d.m.Y" }}</td>
+
+                    <td class="py-2 px-2 font-semibold text-gray-800">
+                        {{ kayit.kisi.ad }} {{ kayit.kisi.soyad }}
+                    </td>
+
+                    <td class="py-2 px-2 text-gray-600">
+                        {{ kayit.kisi.tc_kimlik_no }}
+                    </td>
+
+                    <td class="py-2 px-2 text-gray-600">
+                        {{ kayit.kisi.yatak_no.yatak_numarasi }}
+                    </td>
+
+                    <td class="py-2 px-2">
+                        <span class="inline-block px-2 py-1 rounded text-xs font-medium
+                            {% if kayit.durum.ad|lower == 'var' %}bg-green-100 text-green-800
+                            {% elif kayit.durum.ad|lower == 'yok' %}bg-red-100 text-red-800
+                            {% elif kayit.durum.ad|lower == 'hasta' %}bg-yellow-100 text-yellow-800
+                            {% elif kayit.durum.ad|lower == 'izinli' %}bg-indigo-100 text-indigo-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ kayit.durum.ad|title }}
+                        </span>
+                    </td>
+
+                    <td class="py-2 px-2 text-right flex justify-end items-center gap-3 text-sm">
+                        <a href="{% url 'yoklama_duzenle' kayit.id %}"
+                           class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition">
+                            <i class="fas fa-edit text-sm"></i> Düzenle
+                        </a>
+
+                        <a href="{% url 'yoklama_sil' kayit.id %}"
+                           class="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition">
+                            <i class="fas fa-trash-alt text-sm"></i> Sil
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="py-4 text-center text-gray-500">Kayıt bulunamadı.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% block extra_js%}
+<script>
+    // Filtreleme butonunun id'si ve inputların id'leri güncellendi
+    const filtreleBtn = document.getElementById('filtrele-btn');
+    const aramaInput = document.getElementById('search-query-input');
+    const tarihInput = document.getElementById('tarih-input');
+    const listeGovdesi = document.getElementById('liste-govdesi'); // tbody için id
+
+    if (filtreleBtn && aramaInput && tarihInput && listeGovdesi) {
+        filtreleBtn.addEventListener('click', function (event) {
+            event.preventDefault(); // Formun normal gönderilmesini engelle
+
+            const q = aramaInput.value;
+            const tarih = tarihInput.value;
+
+            fetch(`/yoklama-listesi/ajax/?q=${q}&tarih=${tarih}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    listeGovdesi.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('AJAX fetch error:', error);
+                    // Hata durumunda kullanıcıya bilgi verebilirsiniz
+                    listeGovdesi.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-red-500">Kayıtlar yüklenirken bir hata oluştu.</td></tr>';
+                });
+        });
+        console.log("DEBUG: Yoklama AJAX filtreleme ayarlandı.");
+    } else {
+        console.warn("WARN: Yoklama filtreleme için gerekli elementler bulunamadı.");
+    }
+</script>
+{% endblock %}
+{% endblock %}

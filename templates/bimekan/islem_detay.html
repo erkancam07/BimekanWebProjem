@@ -1,0 +1,120 @@
+{% extends 'bimekan/base.html' %}
+{% load turkish_filters %}
+
+{% block content %}
+
+
+<!-- 🔍 Filtreleme Formu -->
+<div class="bg-white rounded-lg shadow p-6 mb-8">
+<!-- Sayfa Başlığı -->
+  <div class="mb-6">
+    <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+      <i class="fas fa-user-shield text-blue-500 mr-2"></i> İşlem Detayları
+    </h2>
+  </div>
+
+  <form method="get" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div>
+      <label for="islem_turu" class="block text-sm font-medium text-gray-700 mb-1">İşlem Türü</label>
+      <select name="islem_turu" id="islem_turu"
+              class="w-full px-3 pr-10 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <option value="">Tümü</option>
+        {% for tur in islem_turleri %}
+          <option value="{{ tur.id }}" {% if request.GET.islem_turu == tur.id|stringformat:"s" %}selected{% endif %}>
+            {{ tur.ad }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label for="kurum" class="block text-sm font-medium text-gray-700 mb-1">Kurum</label>
+      <select name="kurum" id="kurum"
+              class="w-full px-3 pr-10 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <option value="">Tümü</option>
+        {% for kurum in kurumlar %}
+          <option value="{{ kurum.id }}" {% if request.GET.kurum == kurum.id|stringformat:"s" %}selected{% endif %}>
+            {{ kurum.kurum_adi }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label for="tarih1" class="block text-sm font-medium text-gray-700 mb-1">Başlangıç Tarihi</label>
+      <input type="date" name="tarih1" id="tarih1" value="{{ request.GET.tarih1 }}"
+             class="w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <div>
+      <label for="tarih2" class="block text-sm font-medium text-gray-700 mb-1">Bitiş Tarihi</label>
+      <input type="date" name="tarih2" id="tarih2" value="{{ request.GET.tarih2 }}"
+             class="w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <div class="lg:col-span-4 text-right mt-4">
+      <button type="submit"
+              class="inline-flex items-center px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        <i class="fas fa-search mr-2"></i> Filtrele
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- 📋 İşlem Tablosu -->
+<div class="overflow-x-auto rounded-lg shadow bg-white">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-sky-100 text-gray-700">
+      <tr>
+        <th class="px-4 py-3 text-left text-sm font-semibold">Dosya No</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold">Adı Soyadı / T.C. No</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold">Tür</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold">Kurum</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold">Zaman</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold">Açıklama</th>
+        <th class="px-4 py-3 text-right text-sm font-semibold">Tutar</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100 text-sm">
+      {% for islem in islemler %}
+        <tr class="hover:bg-sky-50 transition">
+          <td class="px-4 py-2 text-gray-800">{{ islem.misafir.dosya_no }}</td>
+          <td class="px-4 py-2">
+            <div class="font-medium text-gray-900">{{ islem.misafir.ad }} {{ islem.misafir.soyad }}</div>
+            <div class="text-xs text-gray-500 italic">T.C.: {{ islem.misafir.tc_kimlik_no }}</div>
+          </td>
+          <td class="px-4 py-2">
+            {% with tur=islem.islem_turu.ad|lower %}
+              {% if "giriş" in tur %}
+                <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">{{ islem.islem_turu.ad }}</span>
+              {% elif "çıkış" in tur %}
+                <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded">{{ islem.islem_turu.ad }}</span>
+              {% elif "nakdi" in tur %}
+                <span class="px-2 py-1 text-xs font-semibold text-purple-800 bg-purple-100 rounded">{{ islem.islem_turu.ad }}</span>
+              {% else %}
+                {% cycle 'orange' 'yellow' 'indigo' as renk silent %}
+                <span class="px-2 py-1 text-xs font-semibold text-{{ renk }}-800 bg-{{ renk }}-100 rounded">{{ islem.islem_turu.ad }}</span>
+              {% endif %}
+            {% endwith %}
+          </td>
+          <td class="px-4 py-2 text-gray-700">{{ islem.kurum.kurum_adi }}</td>
+          <td class="px-4 py-2 text-gray-700">{{ islem.islem_zamani|date:"d.m.Y H:i" }}</td>
+          <td class="px-4 py-2 text-gray-700">{{ islem.aciklama }}</td>
+          <td class="px-4 py-2 text-right text-gray-800 font-semibold">{{ islem.tutar|turkish_currency }} ₺</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" class="text-center text-gray-500 py-6">Filtreye uyan kayıt bulunamadı.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot class="bg-sky-50">
+      <tr>
+        <td colspan="6" class="text-right px-4 py-3 font-semibold text-gray-700">Toplam Tutar:</td>
+        <td class="px-4 py-3 text-right text-gray-900 font-bold">{{ toplam_tutar|turkish_currency }} ₺</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+{% endblock %}

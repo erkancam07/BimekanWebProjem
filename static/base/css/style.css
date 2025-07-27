@@ -1,0 +1,152 @@
+        /* Custom styles from original base.html */
+        .form-section {
+            transition: all 0.3s ease;
+        }
+        .form-section.hidden {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .person-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        /* Django messages styling */
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        .messages li {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .messages .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .messages .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .messages li i {
+            margin-right: 0.5rem;
+        }
+.sidebar {
+  max-height: none; /* scroll oluşmasın */
+  transition: all 0.3s ease;
+}
+.sidebar .submenu {
+  overflow: visible;
+}
+.submenu {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform-origin: top;
+}
+.submenu.open {
+  transform: scaleY(1);
+  opacity: 1;
+}
+.submenu.closed {
+  transform: scaleY(0);
+  opacity: 0;
+}
+ .fixed-sidebar-container {
+  position: static !important;
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+.sidebar-menu-item .submenu {
+  transition: all 0.3s ease;
+}
+
+        /* Sidebar menu item separator */
+        .sidebar-menu-item {
+            border-bottom: 1px solid #e5e7eb; /* gray-200 */
+            padding-bottom: 0.5rem; /* pb-2 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .sidebar-menu-item:last-child {
+            border-bottom: none; /* Son öğede ayırıcı olmasın */
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        /* Özel durum: pt-4 mt-4 border-t olan li için ayırıcıyı kaldır */
+        .sidebar-menu-item.no-separator {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Sidebar'ı sabit yapmak için yeni CSS */
+        @media (min-width: 1024px) { /* lg breakpoint ve üzeri */
+            .fixed-sidebar-container {
+                position: sticky; /* sticky daha iyi bir seçim olabilir */
+                top: 2rem; /* Header'ın altından başla, py-8'den dolayı 2rem uygun */
+                align-self: flex-start; /* Kendi içeriğine göre hizala */
+                height: calc(100vh - 4rem); /* Ekran yüksekliğinden üst ve alt boşlukları çıkar */
+                overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu göster */
+            }
+            /* Ana içerik alanının sidebar ile çakışmaması için sol boşluk */
+            .main-content-area {
+                margin-left: 25%; /* lg:col-span-1'in genişliği kadar boşluk bırak */
+            }
+        }
+      /* styles.css veya uygun bir CSS dosyanızda */
+
+.modal-content-animation {
+    animation: fadeInScale 0.3s ease-out forwards; /* Bu satırın altı sarı yanıyorsa */
+}
+
+/* BU TANIMI EKLENMİŞ OLMALIDIR */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Kartlara Efekt Verme*/
+.card-item {
+  opacity: 0;
+  transform: translateX(-80px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.card-item.animate-right {
+  transform: translateX(80px);
+}
+
+.card-item.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}

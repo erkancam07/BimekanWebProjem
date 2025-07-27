@@ -1,0 +1,257 @@
+body {
+  font-family: 'Times New Roman', serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  color: #000;
+  line-height: 1.25;
+  font-size: 10pt;
+}
+td {
+  vertical-align: middle;
+}
+
+.a4-container {
+  width: 210mm;
+  min-height: 297mm;
+  background-color: #fff;
+  padding: 15mm 18mm;
+  margin: 15mm auto;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 11pt;
+  margin-bottom: 12px;
+}
+
+.info-paragraph p {
+  margin-bottom: 6px;
+  text-align: justify;
+}
+
+.user-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 9.5pt;
+}
+
+.user-info-table th,
+.user-info-table td {
+  border: 1px solid #000;
+  padding: 6px 8px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.dynamic-input {
+  width: 100%;
+  font-family: 'Times New Roman', serif;
+  font-size: 10.5pt;
+  background: transparent;
+  border: none;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  padding: 8px 4px;
+  line-height: 1.3;
+  resize: none;
+  vertical-align: middle;
+}
+
+.dynamic-input.adsoyad {
+  font-size: clamp(8.5pt, 0.9vw, 9.5pt);
+}
+
+
+.dynamic-input.tarih {
+  min-height: 36px;
+}
+.form-table td {
+  vertical-align: middle; /* Bu tüm hücre içeriğini dikeyde ortalar */
+}
+
+.user-info-table td input[type="text"] {
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font-size: clamp(9pt, 1vw, 10.5pt);
+  padding: 4px 2px;
+  box-sizing: border-box;
+}
+
+.signature-cell {
+  min-width: 80px;
+  height: 35px;
+}
+
+.list-section {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px; /* Önceki gap 18px ise biraz azaltılmış hali */
+  margin-top: 8px; /* Üst boşluk da hafif azaltıldı */
+}
+
+.list-column {
+  width: 50%;
+}
+
+.list-column h4 {
+  font-size: 10.5pt;
+  margin: 0; /* Tüm boşlukları kaldırıyoruz */
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.list-column ol {
+  padding-left: 18px;
+  margin-top: 0;     /* Başlıkla arasındaki boşluk = 0 */
+  margin-bottom: 8px; /* Liste ile sonraki başlık arası küçük boşluk (opsiyonel) */
+}
+
+.list-column li {
+  margin-bottom: 2px;
+  line-height: 1.25;
+}
+.page-toolbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.back-button,
+.print-button {
+  font-size: 10pt;
+  padding: 6px 12px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0;                    /* Hiçbir fazladan boşluk yaratmasın */
+  float: none !important;       /* Önceki stil varsa iptal */
+  position: static !important;  /* Sayfa akışına göre hizalanmalı */
+}
+textarea {
+  text-align: center;         /* Metni yatay olarak ortalar */
+  vertical-align: middle;     /* Bu sadece inline durumlar için; textarea'ya etki etmez */
+}
+.back-button:hover,
+.print-button:hover {
+  background-color: #e0e0e0;
+}
+.back-button {
+  background-color: #dfefff;
+  color: #004488;
+  font-weight: bold;
+}
+
+@media print {
+  .a4-container {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .page-toolbar {
+    display: none !important;
+  }
+ .list-section {
+    display: flex;
+    gap: 8px;                /* Sütun arası boşluk azaldı */
+    flex-wrap: nowrap;
+  }
+
+  .list-column h4 {
+    font-size: 10pt;
+    margin: 0;
+  }
+
+  .list-column ol {
+    margin-top: 0;
+    margin-bottom: 6px;
+    padding-left: 14px;
+  }
+
+  .list-column li {
+    font-size: 9pt;
+    margin-bottom: 1px;
+    line-height: 1.15;
+  }
+
+  body {
+    font-size: 10pt;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form-table-container,
+  .list-section {
+    page-break-inside: avoid;
+    margin-top: -12px !important;  /* Sayfa içerik başlangıcını yukarı çeker */
+  }
+
+  html,
+  body {
+    height: auto;
+    overflow: visible;
+  }
+  .print-button {
+    display: none !important;
+  }
+  .header-title,
+  .user-info-table {
+    display: block;
+    page-break-after: avoid;
+  }
+}
+
+@media screen {
+    .print-button {
+                position: fixed;
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 18px;
+                /*background-color: #28a745;*/
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+                z-index: 1000;
+                transition: background-color 0.2s ease, transform 0.2s ease;
+            }
+            .print-button:hover {
+                /*background-color: #218838;*/
+                background-color: #0056b3;
+                transform: translateY(-2px);
+            }
+            .print-button:active {
+                transform: translateY(0);
+            }
+  
+}

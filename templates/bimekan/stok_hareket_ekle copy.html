@@ -1,0 +1,127 @@
+{% extends 'bimekan/base.html' %}
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6 max-w-xl mx-auto">
+    <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-teal-100 via-teal-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-exchange-alt text-teal-600 mr-2"></i> Stok Hareketi Ekle
+    </h2>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Hata!</strong>
+                <span class="block sm:inline">{{ form.non_field_errors }}</span>
+            </div>
+        {% endif %}
+
+        <div>
+            <label for="{{ form.urun.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.urun.label }}
+            </label>
+            {{ form.urun }}
+            {% if form.urun.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.urun.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.miktar.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.miktar.label }}
+            </label>
+            {{ form.miktar }}
+            {% if form.miktar.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.miktar.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.islem_turu.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.islem_turu.label }}
+            </label>
+            {{ form.islem_turu }}
+            {% if form.islem_turu.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.islem_turu.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div id="alici_field" class="{% if form.islem_turu.value == 'Çıkış' or not form.is_bound %}block{% else %}hidden{% endif %}">
+            <label for="{{ form.alici.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.alici.label }}
+            </label>
+            {{ form.alici }}
+            {% if form.alici.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.alici.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div id="kaynak_firma_field" class="{% if form.islem_turu.value == 'Giriş' %}block{% else %}hidden{% endif %}">
+            <label for="{{ form.kaynak_firma.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.kaynak_firma.label }}
+            </label>
+            {{ form.kaynak_firma }}
+            {% if form.kaynak_firma.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.kaynak_firma.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.aciklama.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.aciklama.label }}
+            </label>
+            {{ form.aciklama }}
+            {% if form.aciklama.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.aciklama.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+
+        <div class="text-right">
+            <button type="submit" class="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition">
+                <i class="fas fa-save mr-2"></i> Stok Hareketi Kaydet
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const islemTuruSelect = document.getElementById('id_islem_turu');
+        const aliciField = document.getElementById('alici_field');
+        const kaynakFirmaField = document.getElementById('kaynak_firma_field');
+        const aliciSelect = document.getElementById('id_alici'); // Alıcı select box'ı
+
+        function toggleFields() {
+            if (islemTuruSelect.value === 'Çıkış') {
+                aliciField.style.display = 'block';
+                kaynakFirmaField.style.display = 'none';
+                // Alıcı zorunlu olduğu için 'required' attribute'ünü ekle
+                aliciSelect.setAttribute('required', 'required');
+                document.getElementById('id_kaynak_firma').removeAttribute('required'); // Kaynak firma zorunlu değil
+                document.getElementById('id_kaynak_firma').value = ''; // Alanı temizle
+
+            } else if (islemTuruSelect.value === 'Giriş') {
+                aliciField.style.display = 'none';
+                kaynakFirmaField.style.display = 'block';
+                // Kaynak firma zorunlu olduğu için 'required' attribute'ünü ekle
+                document.getElementById('id_kaynak_firma').setAttribute('required', 'required');
+                aliciSelect.removeAttribute('required'); // Alıcı zorunlu değil
+                aliciSelect.value = ''; // Alanı temizle (select'in varsayılan değeri boşsa)
+            } else {
+                // Her ikisini de gizle veya varsayılan duruma getir
+                aliciField.style.display = 'none';
+                kaynakFirmaField.style.display = 'none';
+                aliciSelect.removeAttribute('required');
+                document.getElementById('id_kaynak_firma').removeAttribute('required');
+                aliciSelect.value = '';
+                document.getElementById('id_kaynak_firma').value = '';
+            }
+        }
+
+        // Sayfa yüklendiğinde bir kez çalıştır
+        toggleFields();
+
+        // İşlem türü değiştiğinde çalıştır
+        islemTuruSelect.addEventListener('change', toggleFields);
+    });
+</script>
+{% endblock %}

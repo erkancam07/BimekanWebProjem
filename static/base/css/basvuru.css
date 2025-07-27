@@ -1,0 +1,678 @@
+ /* Temel font boyutu artırıldı (tüm rem değerlerini etkiler) */
+        html {
+            font-size: 16px;
+        }
+
+        /* Genel sayfa ve form konteyner stili */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 5px;
+        }
+        .page-toolbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+        .back-button,
+        .print-button {
+        font-size: 10pt;
+        padding: 6px 12px;
+        background-color: #f2f2f2;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 0;                    /* Hiçbir fazladan boşluk yaratmasın */
+        float: none !important;       /* Önceki stil varsa iptal */
+        position: static !important;  /* Sayfa akışına göre hizalanmalı */
+        }
+        .back-button:hover,
+        .print-button:hover {
+        background-color: #e0e0e0;
+        }
+        .back-button {
+        background-color: #dfefff;
+        color: #004488;
+        font-weight: bold;
+        }
+
+        .form-wrapper {
+            max-width: 240mm;
+            margin: 5px auto;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            line-height: 1.2;
+        }
+
+        /* Başlıklar */
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-top: 0px !important;    /* Yeni eklendi/Değiştirildi: Üst marjini sıfırlar */
+            padding-top: 0px !important;   /* Yeni eklendi/Değiştirildi: Üst paddingi sıfırlar */
+            margin-bottom: 5px;            /* Önceki ayardan kalma */
+            padding-bottom: 3px;           /* Önceki ayardan kalma */
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .dosya-no {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4a5568;
+            text-align: right;
+            padding: 4px 8px;
+            background-color: #f7fafc;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Yeni Bölüm Konteynerleri */
+        .form-section-container {
+            border: 1.5px solid #cbd5e0;
+            border-radius: 4px;
+            
+            background-color: #fefefe;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .form-section-title {
+            font-size: 0.9rem; /* Font boyutu küçültüldü */
+            font-weight: 600;
+            color: #2d3748;
+            line-height: 1.1; /* Yeni eklendi/Değiştirildi: Başlık metninin satır yüksekliğini azaltır */
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        /* Form alanları için genel grid düzeni */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px 18px; /* Boşluklar biraz azaltıldı */
+            align-items: flex-start;
+        }
+        /* Kişisel Bilgiler için özel grid düzeni 
+        .personal-info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }*/
+        /* Sağlık ve Engel Durumu kartı için GENEL grid ayarları */
+        /* Ekran ve Print için aynı görünümü sağlar */
+        .form-grid.health-status-grid {
+        display: grid; /* Grid düzenini etkinleştir */
+        grid-template-columns: repeat(2, 1fr); /* İki eşit genişlikte sütun */
+        gap: 4px; /* Sütunlar ve satırlar arası boşluk */
+        }
+        /* İstihdam ve Aile Durumu için özel grid düzeni */
+        .employment-family-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* İletişim ve Güvence Bilgileri için özel grid düzeni */
+        .contact-guarantee-grid {
+            grid-template-columns: repeat(3, 1fr); /* Adres ve Sosyal Güvence yan yana */
+            gap: 12px 18px; /* Grid boşlukları */
+        }
+        .contact-guarantee-grid .form-row:not(:last-child) {
+            margin-bottom: 0px; /* Bu section'da form-row'ların kendi marginleri olmasın */
+        }
+
+
+        /* Durum ve Geliş Detayları için özel grid düzeni */
+        .status-details-grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 sütunlu yapıyı koruyoruz */
+            gap: 12px 18px; /* Boşluklar biraz azaltıldı */
+        }
+        /* Tek sütunlu kalmasını istediğimiz form-row'lar için */
+        .status-details-grid .form-row.span-all-columns {
+            grid-column: 1 / -1; /* Tüm sütunları kapla */
+        }
+        /* Durum ve Geliş Detayları kartı için GENEL grid ayarları */
+        /* Ekran ve Print için aynı görünümü sağlar */
+        .form-grid.status-details-grid {
+        display: grid; /* Grid düzenini etkinleştir */
+        grid-template-columns: repeat(2, 1fr); /* İki eşit genişlikte sütun */
+        gap: 8px; /* Sütunlar ve satırlar arası boşluk */
+        }
+        /* form-row elemanlarının ızgarada doğru hizalanmasını ve boşluksuz görünmesini sağlamak için */
+.form-grid.status-details-grid .form-row {
+  grid-column: auto; /* Elemanların ızgara sütunlarına otomatik yerleşmesini sağlar */
+  margin: 0; /* Varsayılan marginleri kaldır */
+  padding: 0; /* Varsayılan paddingleri kaldır */
+}
+
+/* Input wrapper ve label içindeki elemanlar için boşluk ayarları */
+.form-grid.status-details-grid .form-row .form-input-wrapper,
+.form-grid.status-details-grid .form-row .form-label {
+  padding: 0; /* İç paddingleri kaldır */
+  margin: 0; /* İç marginleri kaldır */
+}
+
+/* Checkbox grubundaki input alanı için stil ayarı */
+.form-grid.status-details-grid .form-row .checkbox-group input[type="text"] {
+  margin-left: 5px; /* Checkbox'tan sonra küçük boşluk */
+  flex-grow: 1; /* Kalan alanı doldurmasını sağlar */
+}
+
+
+        /* Her bir form alanı satırı (şimdi kart gibi) */
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            box-shadow: none;
+            justify-content: flex-start;
+            align-items: flex-start;
+            margin-bottom: 0px; /* Genel olarak form-row'lar arası boşlukları grid gap ile yönetiyoruz */
+            min-height: 45px; /* Hizalama için eklendi, daha da düşürüldü */
+        }
+
+        /* Kişisel bilgilerdeki form-row'lar arası boşluğu kontrol etmek için */
+        .personal-info-grid .form-row + .form-row {
+            margin-top: 2px; /* Boşluk daha da azaltıldı */
+        }
+        /* İletişim ve Güvence Bilgileri kartındaki form-row'lar arası boşluğu kontrol etmek için */
+        .contact-guarantee-grid .form-row + .form-row {
+            margin-top: 2px; /* Boşluk daha da azaltıldı */
+        }
+
+
+        /* Özellikle "Engel durumu" alanı ve diğer uzun labeller için genişletme */
+        .form-row.span-all-columns {
+            grid-column: 1 / -1; /* Tüm sütunları kapla */
+        }
+
+        /* Soru etiketi */
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0px !important; /* Label ile input arası boşluk KESİNLİKLE kaldırıldı */
+            line-height: 1.15; /* Satır yüksekliği biraz düşürüldü */
+            word-break: break-word; /* Kelime kırılmasına izin ver */
+            text-align: left;
+            width: 100%;
+            hyphens: auto;
+            display: flex; /* İçindeki metni dikey ortalamak için flex kullanabiliriz */
+            align-items: center; /* Metni dikey ortala */
+            min-height: 38px; /* Uzun labeller için min-height */
+        }
+        /* Durum ve Gelişme kartındaki label'lar için özel min-height */
+        .status-details-grid .form-label {
+             min-height: 35px; /* Düşürüldü */
+        }
+
+
+        /* Cevap alanı kapsayıcı */
+        .form-input-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Giriş alanları */
+        .form-input {
+            width: 100%;
+            padding: 1px 8px; /* Padding azaltıldı */
+            border: 1.5px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            padding: 1px 8px; /* Padding'i de biraz daha daralttım */
+            color: #2d3748;
+            background-color: #fdfefe;
+            box-sizing: border-box;
+            
+        }
+        .input-ortala {
+            text-align: center;
+        }
+       
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 1.5px rgba(66, 153, 225, 0.1);
+        }
+
+        /* Otomatik doldurulan alanlar için stil */
+        .form-input[readonly] {
+            background-color: #edf2f7;
+            cursor: default;
+            font-weight: 500;
+        }
+
+        /* Onay kutusu grubu için özel düzenleme */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Boşluk azaltıldı */
+            margin-top: 3px; /* Boşluk azaltıldı */
+            width: 100%;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+        .checkbox-item input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkbox-item .checkbox-label {
+            margin-right: 6px; /* Boşluk azaltıldı */
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .checkbox-item .checkbox-box {
+            width: 15px; /* Boyut biraz azaltıldı */
+            height: 15px; /* Boyut biraz azaltıldı */
+            border: 1.5px solid #a0aec0;
+            background-color: #f7fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem; /* Boyut biraz azaltıldı */
+            color: #2d3748;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+        }
+        /* Seçili durumdaki kutu stili */
+        .checkbox-item input[type="radio"]:checked + .checkbox-label + .checkbox-box {
+            border-color: #3182ce;
+            background-color: #ebf8ff;
+        }
+        .checkbox-item input[type="radio"]:checked + .checkbox-label + .checkbox-box::after {
+            content: 'X';
+            color: #3182ce;
+        }
+
+        /* Beyan ve Taahhüt Bölümü */
+        .declaration-section {
+            margin-top: 25px; /* Margin azaltıldı */
+            padding-top: 12px; /* Padding azaltıldı */
+            border-top: 2px solid #e2e8f0;
+            text-align: center;
+        }
+        .declaration-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 12px; /* Margin azaltıldı */
+            line-height: 1.4;
+        }
+        .signature-area {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            margin-top: 18px; /* Margin azaltıldı */
+            flex-wrap: wrap;
+            gap: 12px; /* Boşluk azaltıldı */
+        }
+        .signature-block {
+            text-align: center;
+            margin: 0 12px; /* Margin azaltıldı */
+            flex: 1;
+            min-width: 170px; /* Minimum genişlik azaltıldı */
+        }
+        .signature-line {
+            border-bottom: 2px dashed #a0aec0;
+            margin-top: 18px; /* Margin azaltıldı */
+            margin-bottom: 4px; /* Boşluk azaltıldı */
+            height: 1px;
+            width: 100%;
+        }
+        .signature-label {
+            font-size: 0.75rem;
+            color: #616e7f;
+            margin-top: 4px; /* Boşluk azaltıldı */
+            font-weight: 500;
+        }
+        .signature-value {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-top: 4px; /* Boşluk azaltıldı */
+        }
+        .date-block {
+            text-align: center;
+            margin-top: 25px; /* Margin azaltıldı */
+            font-size: 0.85rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        .date-value {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        /* Yeni Bölüm Konteynerleri */
+.form-section-container {
+    border: 1.5px solid #cbd5e0;
+    border-radius: 4px;
+    margin-bottom: 10px; /* 15px'ten 10px'e düşürüldü */
+    padding: 0 15px 10px 15px;
+    background-color: #fefefe;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.form-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2d3748;
+  /*  margin-bottom: 5px; /* 10px'ten 5px'e düşürüldü */
+  /*  padding-bottom: 3px; /* 5px'ten 3px'e düşürüldü */
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+        /* Yazdırma için özel CSS kuralları */
+        @media print {
+            body {
+                background-color: #fff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-size: 7.5pt !important; /* Genel font boyutunu daha da küçült */
+                line-height: 1 !important; /* Satır aralığını daralt */
+            }
+            .form-wrapper {
+                max-width: 210mm !important;
+                margin: 0 !important;
+                padding: 5mm 8mm !important; /* A4 kenar boşluklarını daha da daralt */
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                border: none !important;
+            }
+            .form-header, .form-title, .dosya-no, .section-title, .form-label, .form-input,
+            .checkbox-group label, .checkbox-item, .checkbox-item .checkbox-box,
+            .declaration-text, .signature-label, .signature-value, .date-block, .date-value,
+            .form-section-title {
+                color: #000 !important;
+                font-size: inherit !important;
+            }
+            .form-input, .dosya-no, .form-section-container {
+                border-color: #000 !important;
+                background-color: #fff !important;
+            }
+            .form-row, .form-header, .section-title, .signature-line, .form-section-container, .form-section-title {
+                border-color: #000 !important;
+            }
+            .checkbox-item input[type="radio"] + .checkbox-label + .checkbox-box {
+                border: 1.5px solid black !important;
+                background-color: white !important;
+            }
+            .checkbox-item input[type="radio"]:checked + .checkbox-label + .checkbox-box {
+                border: 1.5px solid black !important;
+                background-color: white !important;
+            }
+            .checkbox-item input[type="radio"]:checked + .checkbox-label + .checkbox-box::after {
+                content: 'X';
+                color: black !important;
+            }
+            .print-button {
+                display: none !important;
+            }
+
+            /* Grid ve Flex öğelerini çıktı için optimize et */
+            .form-section-container {
+                padding: 4mm 7mm !important; /* Bölüm kutu iç boşluğunu daha da azalt */
+                margin-bottom: 7px !important; /* Bölüm kutuları arası boşluğu azalt */
+                page-break-inside: avoid;
+                line-height: 1 !important;
+            }
+            .form-section-title {
+                font-size: 9pt !important; /* Kart başlığı font boyutu küçültüldü */
+                margin-top: 0px !important;    /* Yeni eklendi/Değiştirildi: Üst marjini sıfırlar (yazdırma için) */
+                padding-top: 0px !important;   /* Yeni eklendi/Değiştirildi: Üst paddingi sıfırlar (yazdırma için) */
+                margin-bottom: 1px !important;
+                padding-bottom: 1px !important;
+            }
+            /* Print modunda da uzun labeller tüm sütunları kaplasın */
+            .form-grid, .personal-info-grid, .health-status-grid, .employment-family-grid {
+                grid-template-columns: repeat(2, 1fr) !important; /* Genelde 2 sütun daha iyi */
+                gap: 5px 8px !important; /* Boşlukları daralt */
+            }
+            .status-details-grid {
+                grid-template-columns: repeat(2, 1fr) !important; /* 2 sütun yeterli olabilir */
+                gap: 5px 8px !important; /* Boşlukları daralt */
+            }
+            /* Durum ve Geliş Detayları bölümü için print moduna özel kurallar */
+            .form-grid.status-details-grid .form-row {
+                break-inside: avoid !important; /* Sayfa sonu veya sütun sonlarında bölünmeyi engellemeye çalışır */
+            }
+
+            /* Print modunda İletişim ve Güvence Bilgileri grid düzeni */
+            .contact-guarantee-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 5px 8px !important;
+            }
+            .contact-guarantee-grid .form-row.span-all-columns {
+                grid-column: 1 / -1 !important;
+            }
+
+            .form-row.span-all-columns {
+                grid-column: 1 / -1 !important;
+            }
+
+            .personal-info-grid .form-row {
+                grid-column: span 1;
+            }
+
+            .form-row {
+                padding: 0 !important;
+                margin-bottom: 0 !important;
+                page-break-inside: avoid;
+                min-height: 30px !important; /* Baskı için form-row min-height daha da düşürüldü */
+            }
+            /* Yazdırma modunda kişisel bilgilerdeki form-row'lar arası boşluk */
+            .personal-info-grid .form-row + .form-row {
+                margin-top: 1px !important; /* Daha da azaltıldı */
+            }
+            /* Yazdırma modunda iletişim ve güvence bilgilerindeki form-row'lar arası boşluk */
+            .contact-guarantee-grid .form-row + .form-row {
+                margin-top: 1px !important; /* Daha da azaltıldı */
+            }
+
+
+            .form-label {
+                font-size: 7pt !important; /* Label font boyutunu daha da küçült */
+                margin-bottom: 0px !important; /* Label ile input arası boşluk KESİNLİKLE kaldırıldı */
+                min-height: 20px !important; /* Baskıda daha küçük font olduğu için daha az min-height düşürüldü */
+            }
+
+            .form-input {
+                font-size: 7.5pt !important; /* Input font boyutunu küçült */
+                padding: 1px 5px !important; /* Input padding'i daha da azaltıldı */
+            }
+            .checkbox-item, .checkbox-item .checkbox-label {
+                font-size: 7.5pt !important;
+            }
+            .checkbox-item .checkbox-box {
+                width: 10px !important; /* Checkbox boyutları daha da küçültüldü */
+                height: 10px !important;
+            }
+            .signature-area {
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                margin-top: 8px !important; /* Margin azaltıldı */
+                gap: 5px !important; /* Boşluk azaltıldı */
+            }
+            .signature-block {
+                min-width: unset !important;
+                flex: 1 !important;
+                padding: 0 2px;
+            }
+            .signature-label {
+                font-size: 6.5pt !important;
+            }
+            .signature-value {
+                font-size: 7pt !important;
+            }
+            .date-block {
+                margin-top: 10px !important;
+                font-size: 7pt !important;
+            }
+            .signature-line {
+                 margin-top: 10px !important;
+                 margin-bottom: 1px !important;
+            }
+            .declaration-text {
+                margin-bottom: 8px !important;
+                font-size: 7.5pt !important;
+            }
+              /* YEni Bölüm*/      
+            .form-section-container {
+                padding: 3mm 6mm !important;
+                margin-bottom: 5px !important; /* 7px'ten 5px'e düşürüldü */
+            }
+            .form-section-title {
+                font-size: 8pt !important;
+                margin-bottom: 2px !important; /* 3px'ten 2px'e düşürüldü */
+                padding-bottom: 1px !important; /* 2px'ten 1px'e düşürüldü */
+            }
+            .personal-info-grid {
+                grid-template-columns: repeat(3, 1fr) !important; /* 3 input sığdırmak için */
+                gap: 3px 6px !important; /* Boşlukları daralt */
+            }
+           .page-toolbar {
+                display: none !important;
+            }
+
+        }
+
+        /* print button */
+        @media screen {
+            .print-button {
+                position: fixed;
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 18px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+                z-index: 1000;
+                transition: background-color 0.2s ease, transform 0.2s ease;
+            }
+            .print-button:hover {
+                background-color: #218838;
+                transform: translateY(-2px);
+            }
+            .print-button:active {
+                transform: translateY(0);
+            }
+        }
+        html {
+  font-size: 17px;
+}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  margin: 0;
+  padding: 5px;
+}
+.form-wrapper {
+  max-width: 240mm;
+  margin: 5px auto;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+  line-height: 1.2;
+}
+/* Diğer stil içerikleri burada olacak... (header, grid, inputs, checkbox vs.) */
+/* Yazdırma modu */
+@media print {
+  body {
+    background-color: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 7.5pt !important;
+    line-height: 1 !important;
+  }
+  .form-wrapper {
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 5mm 8mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+  .print-button {
+    display: none !important;
+  }
+  .header-title,
+  .user-info-table {
+    display: block;
+    page-break-after: avoid;
+  }
+}
+@media screen {
+            .print-button {
+                position: fixed;
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 18px;
+                /*background-color: #28a745;*/
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+                z-index: 1000;
+                transition: background-color 0.2s ease, transform 0.2s ease;
+            }
+            .print-button:hover {
+                /*background-color: #218838;*/
+                background-color: #0056b3;
+                transform: translateY(-2px);
+            }
+            .print-button:active {
+                transform: translateY(0);
+            }
+}

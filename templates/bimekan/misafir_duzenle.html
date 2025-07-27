@@ -1,0 +1,339 @@
+{% extends 'bimekan/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+            <i class="fas fa-user-edit text-blue-500 mr-2"></i> {{ misafir.ad }} {{ misafir.soyad }} - Bilgileri Düzenle
+        </h2>
+
+
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Kişisel Bilgiler -->
+            <div>
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-id-card mr-2 text-blue-500"></i> Kişisel Bilgiler
+                    </h3>
+                    <hr class="mt-2 border-gray-400">
+                </div>
+                <div class="space-y-4">
+                    <!-- Dosya No alanı: TC Kimlik No'nun hemen üstüne ekleyin -->
+                    <div class="form-row">
+    <label for="{{ form.dosya_no.id_for_label }}" class="form-label ">Dosya No</label>
+    <div class="form-input-wrapper flex items-center"> {# input ve checkbox'ı yan yana hizalamak için flex kullanıldı #}
+        {{ form.dosya_no }} {# Django form alanını doğrudan render ediyoruz #}
+        <div class="checkbox-group ml-4"> {# Checkbox için sola boşluk eklendi #}
+            <label class="checkbox-item">
+                <input type="checkbox" id="gecici_dosya_yap" name="gecici_dosya_yap" value="on"> {# JavaScript ile yönetilecek id #}
+                <span class="checkbox-label">Geçici Dosya Yap</span>
+                <span class="checkbox-box"></span>
+            </label>
+        </div>
+    </div>
+    {# Eğer eski dosya no ile ilgili açıklama metni varsa onu buraya ekleyebilirsiniz #}
+    <small class="text-gray-500">Geçici dosya numaraları başında 'G-' ibaresi bulundurur.</small>
+</div>
+                    <div>
+                        <label for="{{ form.tc_kimlik_no.id_for_label }}" class="block text-sm font-medium text-gray-700">TC Kimlik No</label>
+                        <div class="mt-1">
+                            {{ form.tc_kimlik_no }}
+                        </div>
+                        {% if form.tc_kimlik_no.errors %}
+                            <ul class="text-red-600 text-sm mt-1">
+                                {% for error in form.tc_kimlik_no.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if form.tc_kimlik_no.help_text %}
+                            <p class="mt-2 text-sm text-gray-500">{{ form.tc_kimlik_no.help_text }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="{{ form.ad.id_for_label }}" class="block text-sm font-medium text-gray-700">Adı</label>
+                            <div class="mt-1">
+                                {{ form.ad }}
+                            </div>
+                            {% if form.ad.errors %}
+                                <ul class="text-red-600 text-xs mt-1">
+                                    {% for error in form.ad.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.soyad.id_for_label }}" class="block text-sm font-medium text-gray-700">Soyadı</label>
+                            <div class="mt-1">
+                                {{ form.soyad }}
+                            </div>
+                            {% if form.soyad.errors %}
+                                <ul class="text-red-600 text-xs mt-1">
+                                    {% for error in form.soyad.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="{{ form.dogum_tarihi.id_for_label }}" class="block text-sm font-medium text-gray-700">Doğum Tarihi</label>
+                            <div class="mt-1">
+                                {{ form.dogum_tarihi }}
+                            </div>
+                            {% if form.dogum_tarihi.errors %}
+                                <ul class="text-red-600 text-xs mt-1">
+                                    {% for error in form.dogum_tarihi.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.dogum_yeri.id_for_label }}" class="block text-sm font-medium text-gray-700">Doğum Yeri</label>
+                            <div class="mt-1">
+                                {{ form.dogum_yeri }}
+                            </div>
+                            {% if form.dogum_yeri.errors %}
+                                <ul class="text-red-600 text-xs mt-1">
+                                    {% for error in form.dogum_yeri.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <label for="{{ form.fotograf.id_for_label }}" class="block text-sm font-medium text-gray-700">Kişi Fotoğrafı</label>
+                        <div class="mt-1">
+                            {{ form.fotograf }}
+                        </div>
+                        {% if form.fotograf.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.fotograf.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if misafir.fotograf %}
+                            <div class="mt-2">
+                                <img class="h-20 w-20 rounded-full object-cover" src="{{ misafir.fotograf.url }}" alt="Mevcut Fotoğraf">
+                                <label class="block text-sm font-medium text-gray-700 mt-2">
+                                    <input type="checkbox" name="fotograf-clear" id="fotograf-clear"> Fotoğrafı Sil
+                                </label>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- İletişim Bilgileri -->
+            <div>
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-address-book mr-2 text-blue-500"></i> İletişim Bilgileri
+                    </h3>
+                    <hr class="mt-2 border-gray-400">
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="{{ form.telefon.id_for_label }}" class="block text-sm font-medium text-gray-700">Telefon</label>
+                        <div class="mt-1">
+                            {{ form.telefon }}
+                        </div>
+                        {% if form.telefon.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.telefon.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.adres.id_for_label }}" class="block text-sm font-medium text-gray-700">Adres</label>
+                        <div class="mt-1">
+                            {{ form.adres }}
+                        </div>
+                        {% if form.adres.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.adres.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.sosyal_guvence.id_for_label }}" class="block text-sm font-medium text-gray-700">Sosyal Güvence</label>
+                        <div class="mt-1">
+                            {{ form.sosyal_guvence }}
+                        </div>
+                        {% if form.sosyal_guvence.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.sosyal_guvence.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Konaklama Bilgileri -->
+            <div>
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-bed mr-2 text-blue-500"></i> Konaklama Bilgileri
+                    </h3>
+                    <hr class="mt-2 border-gray-400">
+                </div>
+                <div class="space-y-4">
+                    {# Yatak No alanı - Duruma göre etkin/devre dışı #}
+    <div>
+        <label for="{{ form.yatak_no.id_for_label }}" class="block text-sm font-medium text-gray-700">Yatak No</label>
+        <div class="mt-1">
+            {# Eğer misafir aktifse yatak seçilebilir, pasifse devre dışı #}
+            {% if misafir.durum == 'AKTIF' %}
+                {{ form.yatak_no }}
+            {% else %}
+                <select id="{{ form.yatak_no.id_for_label }}" name="{{ form.yatak_no.html_name }}" disabled 
+                        class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-gray-100 text-gray-500 shadow-sm p-2 cursor-not-allowed">
+                    {% if misafir.yatak_no %}
+                        {# yatak_numarasi değerini geçici bir değişkene atayarak kontrol edelim #}
+                        {% with yatak_numarasi_degeri=misafir.yatak_no.yatak_numarasi %}
+                            {# Eğer yatak_numarasi boş, None veya "NaN" ise "Yok" göster #}
+                            {% if yatak_numarasi_degeri is None or yatak_numarasi_degeri == "" or yatak_numarasi_degeri|stringformat:"s"|upper == "NAN" %}
+                                <option value="">Yok</option>
+                            {% else %}
+                                {# Aksi takdirde, gerçek yatak numarasını göster #}
+                                <option value="{{ misafir.yatak_no.pk }}" selected>{{ yatak_numarasi_degeri }}</option>
+                            {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        {# misafir.yatak_no ilişkisi hiç yoksa "Yatak Yok" göster #}
+                        <option value="">Yatak Yok</option>
+                    {% endif %}
+                </select>
+            {% endif %}
+        </div>
+        {% if form.yatak_no.errors %}
+            <ul class="text-red-600 text-xs mt-1">
+                {% for error in form.yatak_no.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+                    <div>
+                        <label for="{{ form.giris_tarihi.id_for_label }}" class="block text-sm font-medium text-gray-700">Giriş Tarihi</label>
+                        <div class="mt-1">
+                            {{ form.giris_tarihi }}
+                        </div>
+                        {% if form.giris_tarihi.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.giris_tarihi.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    {# Durum bilgisi - sadece label olarak #}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Mevcut Durum</label>
+                        <div class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-700 font-semibold">
+                            {% if misafir.durum == 'AKTIF' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">AKTİF</span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">PASİF</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Beyan Bölümü -->
+            <div>
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-file-alt mr-2 text-blue-500"></i> Kişinin Beyanı
+                    </h3>
+                    <hr class="mt-2 border-gray-400">
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="{{ form.beyan.id_for_label }}" class="block text-sm font-medium text-gray-700">Beyan / Notlar</label>
+                        <div class="mt-1">
+                            {{ form.beyan }}
+                        </div>
+                        {% if form.beyan.errors %}
+                            <ul class="text-red-600 text-xs mt-1">
+                                {% for error in form.beyan.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-end space-x-2">
+            <a href="{% url 'misafir_detay' pk=misafir.pk %}" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                İptal
+            </a>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-blue-200 
+            text-sm font-medium rounded-md shadow-sm 
+            bg-blue-50 text-blue-700 
+            hover:bg-blue-100 hover:text-blue-800 
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                <i class="fas fa-save mr-2"></i>
+                Kaydı Güncelle
+            </button>
+        </div>
+    </form>
+</div>
+{% block extra_js %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dosyaNoInput = document.getElementById('{{ form.dosya_no.id_for_label }}'); // Django'nun otomatik oluşturduğu ID'yi yakala
+    const geciciDosyaCheckbox = document.getElementById('gecici_dosya_yap');
+
+    function updateDosyaNo() {
+        let currentDosyaNo = dosyaNoInput.value.trim();
+
+        if (geciciDosyaCheckbox.checked) {
+            // Eğer checkbox işaretliyse ve dosya no 'G-' ile başlamıyorsa, 'G-' ekle
+            if (!currentDosyaNo.startsWith('G-')) {
+                dosyaNoInput.value = 'G-' + currentDosyaNo;
+            }
+        } else {
+            // Eğer checkbox işaretsizse ve dosya no 'G-' ile başlıyorsa, 'G-' kısmını kaldır
+            if (currentDosyaNo.startsWith('G-')) {
+                dosyaNoInput.value = currentDosyaNo.substring(2); // 'G-' (2 karakter) kısmını sil
+            }
+        }
+    }
+
+    // Sayfa yüklendiğinde başlangıç durumunu ayarla
+    // Eğer dosyaNoInput'un mevcut değeri 'G-' ile başlıyorsa, checkbox'ı işaretle
+    if (dosyaNoInput.value.startsWith('G-')) {
+        geciciDosyaCheckbox.checked = true;
+    }
+
+    // Checkbox'ın durumu değiştiğinde updateDosyaNo fonksiyonunu çağır
+    geciciDosyaCheckbox.addEventListener('change', updateDosyaNo);
+});
+</script>
+{% endblock %}
+{% endblock %}

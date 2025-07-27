@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Başvuru Formu</title>
+  <link rel="stylesheet" href="{% static 'base/css/basvuru.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  {% block extra_css %}
+
+{% endblock %}
+</head>
+<body>
+  <div class="form-wrapper">
+    <div class="page-toolbar">
+        <button class="back-button" onclick="window.location.href='{{ detay_url }}';">← Geri</button>
+        <button class="print-button" onclick="window.print();">🖨️ Yazdır</button>
+    </div>
+    <div class="form-header">
+      <h3 class="form-title">BİMEKAN GEÇİCİ KONAKLAMA MERKEZİ</h3>
+      <h4 class="text-lg">BAŞVURU FORMU</h4>
+      <div class="dosya-no">DOSYA NO: <span class="font-bold">{{ misafir.dosya_no }}</span></div>
+    </div>
+
+    <div class="form-section-container">
+      <h2 class="form-section-title ">Kişisel Bilgiler</h2>
+       <div class="form-grid personal-info-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <div class="form-row">
+          <label class="form-label">Giriş Tarihi</label>
+            <div class="form-input-wrapper">
+                <input type="text" class="form-input" value="{{ misafir.giris_tarihi }}"  />
+            </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">T.C. NO</label>
+            <div class="form-input-wrapper">
+                <input type="text" class="form-input" value="{{ misafir.tc_kimlik_no }}"  />
+            </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">ADI SOYADI</label>
+          <div class="form-input-wrapper">
+            <input type="text" class="form-input" value="{{ misafir.ad_soyad }}"  />
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">DOĞUM TARİHİ / YERİ</label>
+          <div class="form-input-wrapper">
+            <input type="text" class="form-input" value="{{ misafir.dogum_tarihi|date:"d.m.Y" }} / {{ misafir.dogum_yeri }}" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">CEP NO</label>
+          <div class="form-input-wrapper">
+            <input type="text" class="form-input" value="{{ misafir.telefon }}" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section-container">
+      <h2 class="form-section-title">İletişim ve Güvence Bilgileri</h2>
+      <div class="form-grid contact-guarantee-grid">
+        <div class="form-row">
+          <label class="form-label">ADRES</label>
+          <div class="form-input-wrapper">
+            <input type="text" class="form-input" value="{{ misafir.adres }}"  />
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">SOSYAL GÜVENCE</label>
+          <div class="form-input-wrapper">
+            <input type="text" class="form-input" value="{{ misafir.sosyal_guvence }}"  />
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">ACİL DURUMDA ARANACAK KİŞİ</label>
+          <div class="form-input-wrapper">
+            <input type="text" class="form-input" value="" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <div class="form-section-container">
+    <h2 class="form-section-title">Durum ve Geliş Detayları</h2>
+    {# status-details-grid için Tailwind sınıfları kaldırıldı, stil CSS'ten gelecek #}
+    <div class="form-grid status-details-grid">
+        {# 1. Üzerinizde veya Çantanızda 6136 Sayılı Kanuna Geçen Mal/Madde Yada Malzeme ... Var mı? #}
+        <div class="form-row"> {# span-all-columns kaldırıldı #}
+            <label class="form-label">Üzerinizde veya Çantanızda 6136 Sayılı Kanuna Geçen Mal/Madde Yada Malzeme (Kesici, Delici, Ateşli Silah) vb. Var mı?</label>
+            <div class="form-input-wrapper">
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="radio" name="malzeme_var_mi" value="evet" {% if misafir.malzeme_var_mi == 'evet' %}checked{% endif %}>
+                        <span class="checkbox-label">Evet</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="radio" name="malzeme_var_mi" value="hayir" {% if misafir.malzeme_var_mi == 'hayir' %}checked{% endif %}>
+                        <span class="checkbox-label">Hayır</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        {# Yeni eklenen: Malzeme Açıklaması (Ayrı form-row'da) #}
+        <div class="form-row">
+            <label class="form-label">Varsa Açıklayınız (Malzeme)</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="malzeme_aciklama" class="form-input" value="{{ misafir.malzeme_aciklama|default:'' }}" placeholder="Varsa Açıklayınız">
+            </div>
+        </div>
+
+        {# 2. Üzerinizde veya Çantanızda Değerli Eşya veya Para Var mı? #}
+        <div class="form-row"> {# span-all-columns kaldırıldı #}
+            <label for="degerli_esyalar" class="form-label">Üzerinizde veya Çantanızda Değerli Eşya veya Para Var mı? (Varsa Tüm Sorumluluğu Tarafınıza Ait Olmak Üzere Açıklayınız)</label>
+            <div class="form-input-wrapper">
+                <input type="text" id="degerli_esyalar" name="degerli_esyalar" class="form-input" value="{{ misafir.degerli_esyalar|default:'' }}">
+            </div>
+        </div>
+
+        {# 3. Sokakta Kalma Nedeniniz? #}
+        <div class="form-row">
+            <label class="form-label">Sokakta Kalma Nedeniniz?</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="sokakta_kalma_nedeni" class="form-input" value="{{ misafir.sokakta_kalma_nedeni|default:'' }}">
+            </div>
+        </div>
+
+        {# 4. Barınma Merkezine Geliş Şekliniz? #}
+        <div class="form-row">
+            <label class="form-label">Barınma Merkezine Geliş Şekliniz?</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="gelis_sekli" class="form-input" value="{{ misafir.gelis_sekli|default:'' }}">
+            </div>
+        </div>
+
+        {# 5. Yaklaşık Sokakta Kalma Süreniz? #}
+        <div class="form-row">
+            <label class="form-label">Yaklaşık Sokakta Kalma Süreniz?</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="sokakta_kalma_suresi" class="form-input" value="{{ misafir.sokakta_kalma_suresi|default:'' }}">
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div class="form-section-container">
+    <h2 class="form-section-title">Sağlık ve Engel Durumu</h2>
+    {# health-status-grid güncellendi: iki sütunlu ızgara yapısı eklendi #}
+    <div class="form-grid health-status-grid grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        {# Herhangi Bir Sağlık Sorununuz Var mı? - span-all-columns kaldırıldı #}
+        <div class="form-row">
+            <label class="form-label">Herhangi Bir Sağlık Sorununuz Var mı?</label>
+            <div class="form-input-wrapper">
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="radio" name="saglik_sorunu" value="evet" {% if misafir.saglik_sorunu == 'evet' %}checked{% endif %}>
+                        <span class="checkbox-label">Evet</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="radio" name="saglik_sorunu" value="hayir" {% if misafir.saglik_sorunu == 'hayir' %}checked{% endif %}>
+                        <span class="checkbox-label">Hayır</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        {# Sağlık Sorunu Nedir? - span-all-columns kaldırıldı #}
+        <div class="form-row">
+            <label class="form-label">Sağlık Sorunu Nedir?</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="saglik_aciklama" class="form-input" value="{{ misafir.saglik_aciklama|default:'' }}" placeholder="Varsa Açıklayınız (Kronik rahatsızlık, bulaşıcı hastalık vb.)">
+            </div>
+        </div>
+
+        {# Madde Bağımlılığınız Var mı? - span-all-columns kaldırıldı #}
+        <div class="form-row">
+            <label class="form-label">Madde Bağımlılığınız Var mı?</label>
+            <div class="form-input-wrapper">
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="radio" name="madde_bagimliligi" value="evet" {% if misafir.madde_bagimliligi == 'evet' %}checked{% endif %}>
+                        <span class="checkbox-label">Evet</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="radio" name="madde_bagimliligi" value="hayir" {% if misafir.madde_bagimliligi == 'hayir' %}checked{% endif %}>
+                        <span class="checkbox-label">Hayır</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        {# Madde Bağımlılığı Nedir? - span-all-columns kaldırıldı #}
+        <div class="form-row">
+            <label class="form-label">Madde Bağımlılığı Nedir?</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="madde_bagimliligi_aciklama" class="form-input" value="{{ misafir.madde_bagimliligi_aciklama|default:'' }}" placeholder="Varsa Açıklayınız">
+            </div>
+        </div>
+
+        {# Herhangi Bir Engel Durumunuz Var mı? - Zaten span-all-columns yoktu #}
+        <div class="form-row">
+            <label class="form-label">Herhangi Bir Engel Durumunuz Var mı?</label>
+            <div class="form-input-wrapper">
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="radio" name="engelli_mi" value="evet" {% if misafir.engelli_mi == 'evet' %}checked{% endif %}>
+                        <span class="checkbox-label">Evet</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="radio" name="engelli_mi" value="hayir" {% if misafir.engelli_mi == 'hayir' %}checked{% endif %}>
+                        <span class="checkbox-label">Hayır</span>
+                        <span class="checkbox-box"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        {# Engel Durumu Nedir? - Zaten span-all-columns yoktu #}
+        <div class="form-row">
+            <label class="form-label">Engel Durumu Nedir?</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="engel_durumu_nedir" class="form-input" value="{{ misafir.engel_durumu_nedir|default:'' }}">
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div class="form-section-container">
+            <h2 class="form-section-title">İstihdam ve Aile Durumu</h2>
+            <div class="form-grid employment-family-grid">
+                <div class="form-row">
+                    <label class="form-label">Çalışabilecek Güçte misiniz?</label>
+                    <div class="form-input-wrapper">
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="radio" name="calisabilecek_mi" value="evet">
+                                <span class="checkbox-label">Evet</span>
+                                <span class="checkbox-box"></span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="calisabilecek_mi" value="hayir">
+                                <span class="checkbox-label">Hayır</span>
+                                <span class="checkbox-box"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Uygun İş Bulunursa Çalışır mısınız?</label>
+                    <div class="form-input-wrapper">
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="radio" name="calisir_mi" value="evet">
+                                <span class="checkbox-label">Evet</span>
+                                <span class="checkbox-box"></span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="calisir_mi" value="hayir">
+                                <span class="checkbox-label">Hayır</span>
+                                <span class="checkbox-box"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Çalışmıyorsanız Nedeni Nedir?</label>
+                    <div class="form-input-wrapper">
+                        <input type="text" name="calismama_nedeni" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Mesleki Tecrübeniz var mı? (Varsa Belirtiniz)</label>
+                    <div class="form-input-wrapper">
+                        <input type="text" name="mesleki_tecrube" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Şu anki geçim kaynağınız nedir?</label>
+                    <div class="form-input-wrapper">
+                        <input type="text" name="gecim_kaynagi" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Aileniz Var mı? (Yakınlarınızla görüşüyor musunuz?)</label>
+                    <div class="form-input-wrapper">
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="radio" name="ailesi_var_mi" value="evet">
+                                <span class="checkbox-label">Evet</span>
+                                <span class="checkbox-box"></span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="ailesi_var_mi" value="hayir">
+                                <span class="checkbox-label">Hayır</span>
+                                <span class="checkbox-box"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-section-container declaration-section">
+      <h2 class="form-section-title">Beyan ve İmza</h2>
+      <p class="declaration-text">YUKARIDAKİ BELİRTMİŞ OLDUĞUM BİLGİLERİN DOĞRU OLDUĞUNU BEYAN VE TAAHHÜT EDERİM</p>
+      <div class="signature-area">
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <div class="signature-label">BEYAN EDEN</div>
+          <div class="signature-value">İMZA: ............................................</div>
+          <div class="signature-value">ADI SOYADI: <input type="text" class="form-input no-border input-ortala " placeholder="Görevli Ad Soyad" value="{{ misafir.ad_soyad }}"/></div>
+        </div> 
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <div class="signature-label">BAŞVURUYU ALAN</div>
+          <div class="signature-value">İMZA: ............................................</div>
+          <div class="signature-value">ADI SOYADI: <input type="text" class="form-input no-border input-ortala " placeholder="Görevli Ad Soyad" /></div>
+        </div>
+      </div>
+      <div class="date-block">TARİH: <span class="date-value">{{ misafir.giris_tarihi|date:"d.m.Y" }}</span></div>
+    </div>
+  </div>
+
+  
+</body>
+</html>

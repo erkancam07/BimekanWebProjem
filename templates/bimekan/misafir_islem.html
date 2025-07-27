@@ -1,0 +1,213 @@
+{% extends 'bimekan/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-exchange-alt text-blue-500 mr-2"></i> {{ misafir.ad }} {{ misafir.soyad }} İçin İşlem Yap
+    </h2>
+    
+        
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Kişi Bilgileri -->
+            <div>
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-user mr-2 text-blue-500"></i> Kişi Bilgileri
+                    </h3>
+                    <hr class="mt-2 border-gray-400">
+                </div>
+                {# Kişi bilgileri kartının zemin rengi bg-blue-50 olarak değiştirildi #}
+                <div class="bg-blue-50 p-4 rounded-lg shadow-sm">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="flex-shrink-0">
+                            {% if misafir.fotograf %}
+                                <img class="h-16 w-16 rounded-full object-cover" src="{{ misafir.fotograf.url }}" alt="{{ misafir.ad }} {{ misafir.soyad }}'ın profil fotoğrafı">
+                            {% else %}
+                                <img class="h-16 w-16 rounded-full" src="https://placehold.co/64x64/cccccc/ffffff?text={{ misafir.ad|first }}{{ misafir.soyad|first }}" alt="{{ misafir.ad }} {{ misafir.soyad }}'ın profil fotoğrafı">
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow grid grid-cols-2 gap-x-4 gap-y-2 text-gray-700">
+                            <div class="font-semibold p-1 bg-blue-100 rounded-md">Adı Soyadı:</div>
+                            <div class="col-span-1 p-1 bg-blue-100 rounded-md">{{ misafir.ad }} {{ misafir.soyad }}</div>
+                            <div class="font-semibold p-1">Dosya No:</div>
+                            <div class="col-span-1 p-1">{{ misafir.dosya_no }}</div>
+                            <div class="font-semibold p-1 bg-blue-100 rounded-md">T.C. Kimlik No:</div>
+                            <div class="col-span-1 p-1 bg-blue-100 rounded-md">{{ misafir.tc_kimlik_no }}</div>
+                            <div class="font-semibold p-1">Mevcut Durum:</div>
+                            <div class="col-span-1 p-1">
+                                {% if misafir.durum == 'AKTIF' %}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
+                                {% else %}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Pasif</span>
+                                {% endif %}
+                            </div>
+                            <div class="font-semibold p-1 bg-blue-100 rounded-md">Yatak No:</div>
+                            <div class="col-span-1 p-1 bg-blue-100 rounded-md">
+                                {% if misafir.yatak_no %}
+                                    {{ misafir.yatak_no.yatak_numarasi }}
+                                {% else %}
+                                    Belirtilmedi / Yok
+                                {% endif %}
+                            </div>
+                           
+                            {# Kişi pasifse çıkış nedeni ve tarihi gösteriliyor #}
+                            {% if misafir.durum == 'PASIF' %}
+                                <div class="font-semibold p-1">Çıkış Tarihi:</div>
+                                <div class="col-span-1 p-1">{{ misafir.cikis_tarihi|date:"d.m.Y H:i"|default:"Belirtilmedi" }}</div>
+                                <div class="font-semibold p-1 bg-blue-100 rounded-md">Çıkış Nedeni:</div>
+                                <div class="col-span-1 p-1 bg-blue-100 rounded-md">{{ misafir.cikis_nedeni|default:"Belirtilmedi" }}</div>
+                            {% endif %}
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İşlem Bilgileri -->
+            <div>
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-clipboard-list mr-2 text-blue-500"></i> İşlem Bilgileri
+                    </h3>
+                    <hr class="mt-2 border-gray-400">
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="{{ form.islem_turu.id_for_label }}" class="block text-sm font-medium text-gray-700">İşlem Türü</label>
+                        {{ form.islem_turu }}
+                        {% if form.islem_turu.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.islem_turu.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.tutar.id_for_label }}" class="block text-sm font-medium text-gray-700">Tutar</label>
+                        {{ form.tutar }}
+                        {% if form.tutar.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.tutar.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+
+                        <div>
+                            <label for="{{ form.kurum.id_for_label }}" class="block text-sm font-medium text-gray-700">Kurum</label>
+                            {{ form.kurum }}
+                            {% if form.kurum.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.kurum.errors.as_text }}</p>
+                            {% endif %}
+                        </div>
+                        
+  
+                    
+                    <div>
+                        <label for="{{ form.aciklama.id_for_label }}" class="block text-sm font-medium text-gray-700">Açıklama</label>
+                        {{ form.aciklama }}
+                        {% if form.aciklama.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.aciklama.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+                     {# Kişi Aktifse Giriş tarihi gösteriliyor #}
+                            <div id="giris-islemleri-div" class="space-y-4 hidden"> 
+                                <div>
+                                    <label for="{{ form.giris_tarihi.id_for_label }}" class="block text-sm font-medium text-gray-700">Giriş Tarihi</label>
+                                    {{ form.giris_tarihi }}
+                                    {% if form.giris_tarihi.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.giris_tarihi.errors.as_text }}</p>
+                                    {% endif %}
+                                </div>
+                                </div>
+                    <!-- Çıkış Nedeni ve Çıkış Tarihi Dinamik Alanları -->
+                    <div id="cikis-islemleri-div" class="space-y-4 hidden"> 
+                        <div>
+                            <label for="{{ form.cikis_tarihi.id_for_label }}" class="block text-sm font-medium text-gray-700">Çıkış Tarihi</label>
+                            {{ form.cikis_tarihi }}
+                            {% if form.cikis_tarihi.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.cikis_tarihi.errors.as_text }}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.cikis_nedeni.id_for_label }}" class="block text-sm font-medium text-gray-700">Çıkış Nedeni</label>
+                            {{ form.cikis_nedeni }}
+                            {% if form.cikis_nedeni.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.cikis_nedeni.errors.as_text }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Ayni Yardım için ürün/miktar alanı -->
+<div id="ayni-islemleri-div" class="space-y-4 hidden">
+  <div>
+    <label for="{{ form.urun.id_for_label }}" class="block text-sm font-medium text-gray-700">Ürün</label>
+    {{ form.urun }}
+    {% if form.urun.errors %}
+      <p class="text-red-500 text-xs mt-1">{{ form.urun.errors.as_text }}</p>
+    {% endif %}
+  </div>
+
+  <div>
+    <label for="{{ form.miktar.id_for_label }}" class="block text-sm font-medium text-gray-700">Miktar</label>
+    {{ form.miktar }}
+    {% if form.miktar.errors %}
+      <p class="text-red-500 text-xs mt-1">{{ form.miktar.errors.as_text }}</p>
+    {% endif %}
+  </div>
+</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-end space-x-4 mt-8">
+            <a href="{% url 'misafir_detay' pk=misafir.pk %}" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                İptal
+            </a>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-save mr-2"></i> İşlem Kaydet
+            </button>
+        </div>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+  const select = document.getElementById("id_islem_turu");
+  const girisDiv = document.getElementById("giris-islemleri-div");
+  const cikisDiv = document.getElementById("cikis-islemleri-div");
+  const ayniDiv = document.getElementById("ayni-islemleri-div"); // yeni bölüm
+  const girisInput = document.getElementById("id_giris_tarihi");
+  const cikisInput = document.getElementById("id_cikis_tarihi");
+
+  function toggleIslemAlanlari() {
+    const secim = select.options[select.selectedIndex].text.trim().toLowerCase();
+    const now = new Date();
+    const formatted = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}T${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+    girisDiv.classList.add("hidden");
+    cikisDiv.classList.add("hidden");
+    ayniDiv.classList.add("hidden");
+    girisInput.value = '';
+    cikisInput.value = '';
+
+    if (secim === "giriş") {
+      girisDiv.classList.remove("hidden");
+      girisInput.value = formatted;
+    } else if (secim === "çıkış") {
+      cikisDiv.classList.remove("hidden");
+      cikisInput.value = formatted;
+    } else if (secim === "ayni yardım") {
+      ayniDiv.classList.remove("hidden");
+    }
+  }
+
+  if (select) {
+    toggleIslemAlanlari();
+    select.addEventListener("change", toggleIslemAlanlari);
+  }
+});  
+</script>
+{% endblock %}
+{% endblock %}

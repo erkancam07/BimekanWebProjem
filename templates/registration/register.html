@@ -1,0 +1,53 @@
+{% extends 'bimekan/base.html' %}
+{% load static %}
+
+{% block title %}Kayıt Ol{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center items-center min-h-[calc(100vh-150px)] px-4 sm:px-6 lg:px-8"> {# Responsive padding eklendi #}
+        <div class="bg-white rounded-xl shadow-2xl p-8 sm:p-10 lg:p-12 w-full max-w-md border border-gray-200"> {# Daha belirgin gölge ve yuvarlak köşeler #}
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-8 text-center"> {# Daha büyük ve kalın başlık #}
+                <i class="fas fa-user-plus text-green-700 mr-3"></i> Kayıt Ol
+            </h2>
+
+            <form method="post" class="space-y-7"> {# Daha fazla boşluk #}
+                {% csrf_token %}
+                
+                {# Form hatalarını göstermek için #}
+                {% if form.non_field_errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-5 py-4 rounded-lg relative text-sm" role="alert"> {# Daha büyük padding ve yuvarlak köşeler #}
+                        {% for error in form.non_field_errors %}
+                            <p class="flex items-center"><i class="fas fa-exclamation-circle mr-2"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-800 mb-2">{{ field.label }}</label> {# Kalın label #}
+                        <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                               value="{{ field.value|default:'' }}"
+                               class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-base transition duration-150 ease-in-out"> {# Daha modern input stili #}
+                        {% if field.help_text %}
+                            <p class="mt-2 text-xs text-gray-500">{{ field.help_text }}</p> {# Daha fazla boşluk ve küçük metin #}
+                        {% endif %}
+                        {% if field.errors %}
+                            <p class="text-red-600 text-xs mt-2 flex items-center"><i class="fas fa-times-circle mr-1"></i> {{ field.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out transform hover:scale-105"> {# Daha büyük ve kalın buton #}
+                    Kayıt Ol
+                </button>
+            </form>
+
+            <div class="mt-8 text-center"> {# Daha fazla boşluk #}
+                <p class="text-base text-gray-600">
+                    Zaten hesabınız var mı? 
+                    <a href="{% url 'login' %}" class="font-bold text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">Giriş Yapın</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

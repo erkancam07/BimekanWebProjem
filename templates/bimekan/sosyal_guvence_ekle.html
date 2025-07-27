@@ -1,0 +1,98 @@
+{% extends 'bimekan/base.html' %}
+{% block content %}
+<div class="max-w-screen-md mx-auto bg-white p-6 rounded-md shadow-sm">
+
+  
+<h2 class="text-xl font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+    <i class="fas fa-shield-alt text-blue-500 mr-2"></i> Sosyal Güvence Türleri
+</h2>
+
+
+  <!-- ➕ Ekleme Kartı -->
+<div class="bg-white border border-gray-200 rounded-md shadow-md p-6 mb-8 mt-3">
+  <h3 class="text-lg font-semibold text-gray-800 mb-4">➕ Yeni Sosyal Güvence Ekle</h3>
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex flex-wrap items-center gap-4">
+      {{ form.ad.label_tag }}
+      {{ form.ad }}
+      <button type="submit"
+              class="px-4 py-2 bg-sky-50 text-sky-700 text-sm rounded border border-sky-200 hover:bg-sky-100 transition">
+        💾 Kaydet
+      </button>
+    </div>
+  </form>
+</div>
+
+  <!-- 📋 Liste -->
+  <div class="space-y-4">
+    {% for guvence in guvenceler %}
+    <div class="flex items-center justify-between bg-gray-50 border rounded-md p-4 shadow-sm" id="guvence-{{ guvence.id }}">
+      <div class="text-sm font-medium text-gray-800 uppercase" id="guvence-label-{{ guvence.id }}">
+  🛡️ {{ guvence.ad }}
+</div>
+
+
+      <div class="flex items-center gap-2" id="guvence-actions-{{ guvence.id }}">
+        <!-- Düzelt Butonu -->
+        <button onclick="duzenleGuvence({{ guvence.id }}, '{{ guvence.ad }}')" 
+                class="px-3 py-1 bg-sky-50 text-sky-700 text-xs rounded border hover:bg-sky-100 transition">
+          ✏️ Düzelt
+        </button>
+
+        <!-- Sil Formu -->
+        <form method="post" action="{% url 'sosyal_guvence_sil' guvence.id %}"
+              onsubmit="return confirm('Bu sosyal güvence türünü silmek istediğinize emin misiniz?')">
+          {% csrf_token %}
+          <button type="submit"
+                  class="px-3 py-1 bg-red-50 text-red-700 text-xs rounded border hover:bg-red-100 transition">
+            🗑️ Sil
+          </button>
+        </form>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-sm text-gray-500">Henüz sosyal güvence türü eklenmemiş.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function duzenleGuvence(id, ad) {
+    const label = document.getElementById(`guvence-label-${id}`);
+    const actions = document.getElementById(`guvence-actions-${id}`);
+
+    // Label yerine input + form
+    label.innerHTML = `
+      <form method="post" class="flex items-center gap-2">
+        {% csrf_token %}
+        <input type="hidden" name="duzenle_id" value="${id}">
+        <input type="text" name="ad" value="${ad}" class="w-48 rounded-md border-gray-300 p-1 text-sm text-gray-700">
+        <button type="submit"
+                class="px-3 py-1 bg-sky-50 text-sky-700 text-xs rounded hover:bg-sky-100 transition">
+          💾 Kaydet
+        </button>
+        <button type="button"
+                onclick="iptalGuvence(${id}, '${ad}')"
+                class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded hover:bg-gray-200 transition">
+          ❌ İptal
+        </button>
+      </form>
+    `;
+
+    // Düzelt/Sil butonlarını gizle
+    actions.style.display = 'none';
+  }
+
+  function iptalGuvence(id, ad) {
+    const label = document.getElementById(`guvence-label-${id}`);
+    const actions = document.getElementById(`guvence-actions-${id}`);
+
+    label.innerHTML = `🛡️ ${ad}`;
+    actions.style.display = 'flex';
+  }
+</script>
+{% endblock %}

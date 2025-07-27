@@ -1,0 +1,81 @@
+{% extends 'bimekan/base.html' %}
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto mb-8">
+    <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-chart-bar text-indigo-600 mr-2"></i> Genel Stok Durumu
+    </h2>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    {# py-3 yerine py-2 veya py-1.5 kullanarak başlık satırını daraltıyoruz #}
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ürün Adı</th>
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mevcut Adet</th>
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th> {# Yeni Başlık #}
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for urun in genel_stok %}
+                <tr>
+                    {# py-4 yerine py-2 veya py-1.5 kullanarak veri hücrelerini daraltıyoruz #}
+                    <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">{{ urun.ad.isim }}</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ urun.kategori }}</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ urun.mevcut_adet }}</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm font-medium">
+                        <a href="{% url 'yardim_gecmisi' urun_id=urun.pk %}" class="text-indigo-600 hover:text-indigo-900 mr-2">
+                            <i class="fas fa-history mr-1"></i> Geçmişi Gör
+                        </a>
+                        {# Ürünü güncelleme veya silme linkleri de buraya eklenebilir #}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-6 py-2 whitespace-nowrap text-sm text-gray-500 text-center">Henüz tanımlanmış bir ürün yok.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
+    <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-history text-indigo-600 mr-2"></i> Son Stok Hareketleri
+    </h2>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    {# py-3 yerine py-2 veya py-1.5 kullanarak başlık satırını daraltıyoruz #}
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ürün</th>
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Miktar</th>
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlem Türü</th>
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İlgili Kişi</th> {# 'Alıcı/Verici' yerine 'İlgili Kişi' #}
+                    <th scope="col" class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Açıklama</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for hareket in son_islemler %} {# 'islem' yerine 'hareket' kullanabiliriz karışmaması için #}
+                <tr>
+                    {# py-4 yerine py-2 veya py-1.5 kullanarak veri hücrelerini daraltıyoruz #}
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ hareket.tarih|date:"d M Y H:i" }}</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ hareket.urun_ad }} ({{ hareket.urun_kategori }})</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ hareket.miktar }}</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ hareket.islem_turu }}</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ hareket.ilgili_kisi }}</td>
+                    <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ hareket.aciklama|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-2 whitespace-nowrap text-sm text-gray-500 text-center">Henüz bir stok hareketi yapılmamış.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

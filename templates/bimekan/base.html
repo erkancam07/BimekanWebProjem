@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bimekan Otel Kayıt Sistemi{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'base/css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+    
+    {# Fazla olan </style> etiketi buradan kaldırıldı #}
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <header class="bg-gradient-to-r from-gray-700 to-gray-900 text-white rounded-lg shadow-xl p-6 lg:p-8 mb-8 relative overflow-hidden">
+    {# Arka Plan Deseni/Gölgesi (Görsel Zenginlik İçin) #}
+    <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.2\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+    
+    <div class="relative z-10 flex flex-col md:flex-row justify-between items-center">
+        {# Logo ve Başlık Bölümü #}
+        <div class="flex items-center mb-6 md:mb-0">
+            {# Logo İkonu - TailwindCSS icon veya Font Awesome kullanılabilir #}
+            {# Eğer gerçek bir logo resminiz varsa, buraya <img src="{% static 'path/to/your/logo.png' %}" alt="Bimekan Logo" class="w-16 h-16 mr-4"> koyabilirsiniz #}
+            <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center text-gray-800 font-bold text-xl shadow-lg mr-4 flex-shrink-0">
+                <i class="fas fa-hotel text-indigo-600"></i> {# Otel veya kayıt sistemi temasına uygun bir ikon #}
+            </div>
+            
+            <div>
+                <h1 class="text-4xl font-extrabold tracking-tight">Bimekan <span class="text-indigo-300">Kişi Kayıt</span></h1>
+                <p class="mt-2 text-lg text-gray-300">Bimekan kişi kayıt ve takip uygulaması.</p>
+            </div>
+        </div>
+        
+        {# Kullanıcı Bilgisi ve Aksiyonları #}
+        <div class="flex items-center space-x-4">
+            {% if user.is_authenticated %}
+                <div class="text-white text-lg flex items-center bg-gray-700 px-4 py-2 rounded-full shadow-inner">
+                    <i class="fas fa-user-circle mr-2 text-indigo-300"></i> Hoş Geldin, <strong class="ml-1">{{ user.username }}</strong>
+                </div>
+                {# Çıkış işlemi için POST metodu kullanan daha şık bir buton #}
+                <form action="{% url 'logout' %}" method="post" class="inline-block">
+                    {% csrf_token %}
+                    <button type="submit" class="px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center">
+                        <i class="fas fa-sign-out-alt text-lg mr-2"></i> Çıkış Yap
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center">
+                    <i class="fas fa-sign-in-alt text-lg mr-2"></i> Giriş Yap
+                </a>
+                <a href="{% url 'register' %}" class="px-5 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center">
+                    <i class="fas fa-user-plus text-lg mr-2"></i> Kayıt Ol
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-1 fixed-sidebar-container">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+                    <nav>
+                        <ul class="space-y-2">
+                            {% comment %} Yeni Kayıt {% endcomment %}
+                            <li class="sidebar-menu-item">
+                                <a href="{% url 'misafir_kayit_giris' %}" id="btn-new-misafir-form"
+                                   class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
+                                           {% if current_section == 'new-misafir-form' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+                                    <i class="fas fa-user-plus mr-2"></i> Yeni Kayıt
+                                </a>
+                            </li>
+
+                            {% comment %} Tüm Kişiler {% endcomment %}
+                            <li class="sidebar-menu-item">
+                                <a href="{% url 'misafir_listesi' liste_turu='tumu' %}" id="btn-tumu-misafirler-list"
+                                   class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
+                                           {% if current_section == 'tumu-misafirler-list' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+                                    <i class="fas fa-users mr-2"></i> Tüm Kişiler
+                                </a>
+                            </li>
+
+                            {% comment %} Aktif Kişiler {% endcomment %}
+                            <li class="sidebar-menu-item">
+                                <a href="{% url 'misafir_listesi' liste_turu='aktifler' %}" id="btn-aktifler-misafirler-list"
+                                   class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
+                                           {% if current_section == 'aktifler-misafirler-list' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+                                    <i class="fas fa-user-check mr-2"></i> Kalanlar Listesi
+                                </a>
+                            </li>
+
+                            {% comment %} Pasif Kişiler {% endcomment %}
+                            <li class="sidebar-menu-item">
+                                <a href="{% url 'misafir_listesi' liste_turu='pasifler' %}" id="btn-pasifler-misafirler-list"
+                                   class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
+                                           {% if current_section == 'pasifler-misafirler-list' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+                                    <i class="fas fa-user-times mr-2"></i> Çıkış Yapanlar Listesi
+                                </a>
+                            </li>
+
+                            {% comment %} İşlem Yap {% endcomment %}
+                            <li class="sidebar-menu-item">
+  <button onclick="toggleKisiIslemSubmenu()" class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center hover:bg-gray-100 text-gray-700">
+    <i class="fas fa-user-cog mr-2"></i> Kişi İşlemleri
+    <i class="fas fa-chevron-down ml-auto text-sm transition-transform
+       {% if request.resolver_match.url_name == 'islem_detay' or request.resolver_match.url_name == 'misafir_islem_secim' %}rotate-180{% endif %}"
+       id="chevron-kisiislem"></i>
+  </button>
+
+  <ul id="submenu-kisiislem" class="pl-6 mt-2 space-y-1
+    {% if request.resolver_match.url_name == 'islem_detay' or request.resolver_match.url_name == 'misafir_islem_secim' %}block{% else %}hidden{% endif %}">
+    
+    <li>
+      <a href="{% url 'islem_detay' %}"
+         class="{% if request.resolver_match.url_name == 'islem_detay' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
+        📊 İşlemler Detay
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'misafir_islem_secim' %}"
+         class="{% if request.resolver_match.url_name == 'misafir_islem_secim' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
+        📝 İşlem Yap
+      </a>
+    </li>
+
+  </ul>
+</li>
+
+                            {% comment %} Günlük Yoklama — stil uyumlu hali {% endcomment %}
+                            <li class="sidebar-menu-item">
+                                <a href="{% url 'gunluk_yoklama' %}" id="btn-gunluk-yoklama"
+                                   class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
+                                           {% if current_section == 'gunluk-yoklama' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+                                    <i class="fas fa-clipboard-check mr-2"></i> Günlük Yoklama
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item">
+                                <a href="{% url 'yoklama_listesi' %}" id="btn-yoklama-listesi"
+                                    class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
+                                            {% if current_section == 'yoklama-listesi' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+                                    <i class="fas fa-list-alt mr-2"></i> Yoklama Listesi
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item">
+                                <a href="{% url 'aylik_analiz' %}" id="btn-aylik_analiz"
+                                    class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
+                                            {% if current_section == 'aylik_analiz' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+                                    <i class="fas fa-chart-line mr-2"></i> İstatistikler
+                                </a>
+                            </li>
+
+                            {# YENİ EKLENEN: Başvuru Formu Menü Elemanı #}
+                           <li class="sidebar-menu-item">
+                                <button onclick="toggleSubmenu()" class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center hover:bg-gray-100 text-gray-700">
+                                    <i class="fas fa-cog mr-2"></i> Sabitler
+                                    <i class="fas fa-chevron-down ml-auto text-sm transition-transform {% if request.resolver_match.url_name == 'yatak_ekle' or request.resolver_match.url_name == 'sosyal_guvence' %}rotate-180{% endif %}" id="chevron-icon"></i>
+
+                                </button>
+
+                                <ul id="submenu-sabitler" class="pl-6 mt-2 space-y-1 {% if request.resolver_match.url_name == 'yatak_ekle' or request.resolver_match.url_name == 'sosyal_guvence_ekle' %}block{% else %}hidden{% endif %}">
+
+                                    <li>
+                                        <a href="{% url 'yatak_ekle' %}"
+                                            class="{% if request.resolver_match.url_name == 'yatak_ekle' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
+                                            🛏️ Yataklar & Ekle
+                                        </a>
+                                    </li>
+                                  <li>
+                                        <a href="{% url 'sosyal_guvence_ekle' %}"
+                                        class="{% if request.resolver_match.url_name == 'sosyal_guvence_ekle' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
+                                            🛡️ Sosyal Güvence
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+<!-- 📦 Stok İşlemleri -->
+ <li class="sidebar-menu-item">
+    <button onclick="toggleStokSubmenu()" class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center hover:bg-gray-100 text-gray-700">
+        <i class="fas fa-box-open mr-2"></i> Stok İşlemleri
+        <i class="fas fa-chevron-down ml-auto text-sm transition-transform
+            {% if request.resolver_match.url_name == 'yeni_urun_tanimla' or request.resolver_match.url_name == 'stok_hareket_ekle' or request.resolver_match.url_name == 'stok_raporu' %}rotate-180{% endif %}" id="chevron-stok"></i>
+    </button>
+
+    <ul id="submenu-stok" class="pl-6 mt-2 space-y-1 
+        {% if request.resolver_match.url_name == 'yeni_urun_tanimla' or request.resolver_match.url_name == 'stok_hareket_ekle' or request.resolver_match.url_name == 'stok_raporu' %}block{% else %}hidden{% endif %}">
+
+       {% comment %}  <li>
+            <a href="{% url 'yeni_urun_tanimla' %}"
+                class="{% if request.resolver_match.url_name == 'yeni_urun_tanimla' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
+                ➕ Yeni Ürün Tanımla
+            </a>
+        </li> {% endcomment %}
+
+        <li>
+            <a href="{% url 'stok_hareket_ekle' %}"
+                class="{% if request.resolver_match.url_name == 'stok_hareket_ekle' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
+                🔄 Stok Hareketi Ekle
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'stok_raporu' %}"
+                class="{% if request.resolver_match.url_name == 'stok_raporu' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
+                📊 Stok Raporu
+            </a>
+        </li>
+    </ul>
+</li>
+                            {# /YENİ EKLENEN #}
+
+                            {% comment %} Ayarlar {% endcomment %}
+                            <li class="pt-4 mt-4 border-t no-separator">
+                                <button class="w-full text-left px-4 py-2 text-gray-500 rounded-md transition flex items-center hover:text-gray-700 hover:bg-gray-50">
+                                    <i class="fas fa-cog mr-2"></i> Ayarlar
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% if user.is_authenticated %}
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-md mb-8 flex flex-col items-center space-y-4 text-center">
+                        {# 🖼 Profil Fotoğrafı veya Baş Harfleri #}
+                        <div class="h-20 w-20 rounded-full flex items-center justify-center bg-white border border-gray-300 shadow-sm text-gray-800 text-2xl font-bold">
+                            {% if user.profile.fotograf %}
+                                <img src="{{ user.profile.fotograf.url }}" alt="{{ user.get_full_name }}" class="h-full w-full rounded-full object-cover">
+                            {% else %}
+                                {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                            {% endif %}
+                        </div>
+
+                        {# 👤 Kullanıcı Bilgileri #}
+                        <div>
+                            <div class="text-lg font-semibold text-gray-800">{{ user.get_full_name }}</div>
+                            <div class="text-sm text-gray-500">{{ user.email }}</div>
+                        </div>
+
+                        {# 🚪 Çıkış Butonu #}
+                        <a href="{% url 'logout' %}" class="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Çıkış Yap
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="lg:col-span-3">
+                {# Django mesajlarını burada göster #}
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>{% endif %}
+                                {% if message.tags == 'info' %}<i class="fas fa-info-circle"></i>{% endif %}
+                                {% if message.tags == 'warning' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+                                {% if message.tags == 'error' %}<i class="fas fa-times-circle"></i>{% endif %}
+                                {{ message }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {# Main content block where other templates will insert their content #}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        <footer class="mt-8 py-6 text-center text-gray-500 text-sm bg-white rounded-lg shadow-md">
+            <p>&copy; {% now "Y" %} Bimekan Kişi Kayıt Sistemi. Tüm Hakları Saklıdır.</p>
+            <p class="mt-2">Tasarlayan ve Kodlayan: <span class="font-semibold text-blue-600">Erkan ÇAM</span></p>
+        </footer>
+    </div>
+
+    {# Sayfa sonu JavaScript'leri için block #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentSection = "{{ current_section }}";
+            if (currentSection) {
+                const allLinks = document.querySelectorAll('nav ul li a');
+                allLinks.forEach(link => {
+                    link.classList.remove('bg-blue-100', 'text-blue-700');
+                    link.classList.add('hover:bg-gray-100', 'text-gray-700');
+                });
+
+                const activeButton = document.getElementById(`btn-${currentSection}`);
+                if (activeButton) {
+                    activeButton.classList.add('bg-blue-100', 'text-blue-700');
+                    activeButton.classList.remove('hover:bg-gray-100', 'text-gray-700');
+                }
+            }
+        });
+    </script>
+    <script>
+function toggleSubmenu() {
+  const submenu = document.getElementById('submenu-sabitler');
+  const icon = document.getElementById('chevron-icon');
+  submenu.classList.toggle('hidden');
+  icon.classList.toggle('rotate-180');
+}
+function toggleKisiIslemSubmenu() {
+  const submenu = document.getElementById('submenu-kisiislem');
+  const icon = document.getElementById('chevron-kisiislem');
+  submenu.classList.toggle('hidden');
+  icon.classList.toggle('rotate-180');
+}
+function toggleStokSubmenu() {
+  const menu = document.getElementById("submenu-stok");
+  const icon = document.getElementById("chevron-stok");
+  menu.classList.toggle("hidden");
+  icon.classList.toggle("rotate-180");
+}
+</script>
+    {% block extra_js %}{% endblock %}
+
+    {% block extra_body %}{% endblock %} 
+
+</body>
+</html>
