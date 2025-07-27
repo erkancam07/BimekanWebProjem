@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import Yatak, IslemTuru, Misafir, Islem, SosyalGuvence,Kurum # SosyalGuvence'yi import ettik
+<<<<<<< HEAD
 from .models import YoklamaDurumu, YoklamaKaydi,GiyimUrunu, UrunAdi
+=======
+from .models import YoklamaDurumu, YoklamaKaydi
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 from .forms import YatakForm # YatakForm'unuzu import edin
 from import_export.admin import ImportExportModelAdmin
 
@@ -87,6 +91,7 @@ class YoklamaKaydiAdmin(admin.ModelAdmin):
     search_fields = ('kisi__ad', 'kisi__soyad', 'kisi__tc_kimlik_no')
     date_hierarchy = 'tarih'
 
+<<<<<<< HEAD
 admin.site.register(YoklamaKaydi, YoklamaKaydiAdmin)
 
 # UrunAdi modelini admin panelinde görünür yapın
@@ -102,3 +107,6 @@ class GiyimUrunuAdmin(admin.ModelAdmin):
     list_display = ('ad', 'kategori', 'mevcut_adet') # Admin listesinde hangi sütunların görüneceğini ayarlar
     list_filter = ('kategori',) # Kategoriye göre filtreleme ekler
     search_fields = ('ad__isim', 'kategori') # Ürün adı ve kategoriye göre arama yapmayı sağlar
+=======
+admin.site.register(YoklamaKaydi, YoklamaKaydiAdmin)
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17

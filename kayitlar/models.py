@@ -205,7 +205,10 @@ class Kurum(models.Model):
 
     def __str__(self):
         return self.kurum_adi
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 # --- İşlem Modeli ---
 class Islem(models.Model):
     misafir = models.ForeignKey(
@@ -244,6 +247,7 @@ class Islem(models.Model):
         verbose_name="Tutar",
         help_text="Yapılan işlemin tutarı"
     )
+<<<<<<< HEAD
     # Yeni eklenecek alanlar
     urun = models.ForeignKey(
         'GiyimUrunu',
@@ -267,6 +271,16 @@ class Islem(models.Model):
     # )
     # cikis_tarihi = models.DateTimeField(null=True, blank=True)
 
+=======
+    # cikis_nedeni ve cikis_tarihi alanları Islem modelinden kaldırıldı, Misafir modeline taşındı.
+    # cikis_nedeni = models.CharField(
+    #     max_length=255, 
+    #     blank=True, 
+    #     null=True
+    # )
+    # cikis_tarihi = models.DateTimeField(null=True, blank=True)
+    
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
     def save(self, *args, **kwargs):
         if not self.islem_no:
             max_numeric_part = 0
@@ -278,7 +292,11 @@ class Islem(models.Model):
                     numeric_part = int(match.group(1))
                     if numeric_part > max_numeric_part:
                         max_numeric_part = numeric_part
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
             new_number = max_numeric_part + 1
             self.islem_no = f"ISLEM-{new_number}"
 
@@ -287,6 +305,7 @@ class Islem(models.Model):
                 new_number += 1
                 self.islem_no = f"ISLEM-{new_number}"
 
+<<<<<<< HEAD
         # ❗ Önemli: Stok güncelleme mantığı buraya veya bir sinyale taşınacak ❗
         # Bu kısım şimdilik yok, bir sonraki adımda ekleyeceğiz.
         # super().save(*args, **kwargs)
@@ -333,6 +352,9 @@ class Islem(models.Model):
             old_urun.mevcut_adet += old_islem.miktar
             old_urun.save()
 
+=======
+        super().save(*args, **kwargs)
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 
     def __str__(self):
         return f"{self.misafir.ad} {self.misafir.soyad} - {self.islem_turu.ad} ({self.islem_zamani.strftime('%d-%m-%Y %H:%M')})"
@@ -342,6 +364,7 @@ class Islem(models.Model):
         verbose_name_plural = "İşlemler"
         ordering = ['-islem_zamani']
 
+<<<<<<< HEAD
 # Misafir silindiğinde veya bir İşlem silindiğinde yatak ve ayni yardım stoklarını güncelleyen sinyaller
 @receiver(post_delete, sender=Misafir)
 def release_bed_on_misafir_delete(sender, instance, **kwargs):
@@ -356,6 +379,8 @@ def update_stock_on_islem_delete(sender, instance, **kwargs):
         instance.urun.save()
         print(f"Stok geri eklendi: {instance.miktar} adet {instance.urun.ad.isim} ({instance.urun.kategori}) - İşlem silindi.")
 
+=======
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 
 class YoklamaDurumu(models.Model):
     ad = models.CharField(max_length=50)
@@ -371,6 +396,7 @@ class YoklamaKaydi(models.Model):
     def __str__(self):
         return f"{self.kisi} – {self.tarih} – {self.durum}"
 
+<<<<<<< HEAD
 class UrunAdi(models.Model):
     isim = models.CharField(max_length=100, unique=True, verbose_name="Ürün Adı")
 
@@ -534,3 +560,35 @@ class GiyimIslem(models.Model):
     #         instance.urun.mevcut_adet -= instance.miktar
     #         instance.urun.save()
  """
+=======
+
+class GiyimUrunu(models.Model):
+    ad = models.CharField(max_length=100, verbose_name="Ürün Adı")  # Eşofman, mont vs.
+    kategori = models.CharField(max_length=50, choices=[("Üst", "Üst"), ("Alt", "Alt"), ("Ayakkabı", "Ayakkabı")], blank=True)
+    mevcut_adet = models.PositiveIntegerField(default=0, verbose_name="Mevcut Stok")
+    aciklama = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.ad} ({self.mevcut_adet} adet)"
+
+class GiyimIslem(models.Model):
+    urun = models.ForeignKey(GiyimUrunu, on_delete=models.CASCADE)
+    miktar = models.PositiveIntegerField(default=1)
+    alici = models.ForeignKey(Misafir, on_delete=models.CASCADE)
+    islem_turu = models.CharField(max_length=10, choices=[("Giriş", "Giriş"), ("Çıkış", "Çıkış")])
+    tarih = models.DateTimeField(auto_now_add=True)
+    aciklama = models.TextField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Otomatik stok güncellemesi
+        if self.pk is None:  # Yeni kayıt
+            if self.islem_turu == "Giriş":
+                self.urun.mevcut_adet += self.miktar
+            elif self.islem_turu == "Çıkış":
+                self.urun.mevcut_adet -= self.miktar
+            self.urun.save()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.islem_turu}: {self.urun.ad} → {self.alici} ({self.miktar} adet)"
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17

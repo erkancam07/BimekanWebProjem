@@ -6,7 +6,11 @@ from django.core.exceptions import ValidationError
 from .utils import tckn_dogrula 
 from .models import GiyimUrunu
 from django import forms
+<<<<<<< HEAD
 from .models import Islem, GiyimUrunu,GiyimIslem,Kurum
+=======
+from .models import Islem, GiyimUrunu
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 
 class IslemForm(forms.ModelForm):
     urun = forms.ModelChoiceField(
@@ -34,6 +38,7 @@ class IslemForm(forms.ModelForm):
             
         ]
 
+<<<<<<< HEAD
 class GiyimIslemForm(forms.ModelForm):
     class Meta:
         model = GiyimIslem
@@ -199,12 +204,19 @@ class StokEkleForm(forms.ModelForm):
         return cleaned_data
     
 """ class StokEkleForm(forms.ModelForm):
+=======
+class StokEkleForm(forms.ModelForm):
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
     class Meta:
         model = GiyimUrunu
         fields = ['ad', 'kategori', 'mevcut_adet', 'aciklama']
 
         widgets = {
+<<<<<<< HEAD
             'ad': forms.Select(attrs={ # <-- BURASI DEĞİŞTİ: forms.TextInput yerine forms.Select
+=======
+            'ad': forms.TextInput(attrs={
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
                 'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
             }),
             'kategori': forms.Select(attrs={
@@ -218,7 +230,11 @@ class StokEkleForm(forms.ModelForm):
                 'rows': 3,
                 'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-none'
             }),
+<<<<<<< HEAD
         } """
+=======
+        }
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 # TCKN için özel bir Django Validator fonksiyonu tanımlıyoruz
 def tckn_validator(value):
     gecerli, mesaj = tckn_dogrula(value)
@@ -344,9 +360,29 @@ class MisafirKayitForm(forms.ModelForm):
         return tc_kimlik_no
 
 class MisafirIslemForm(forms.ModelForm):
+<<<<<<< HEAD
     # urun ve miktar alanları artık doğrudan Islem modelinden geliyor, bu yüzden buradan kaldırıldı.
     # Ancak IslemTuru seçim ekranında dinamik olarak görünürlüklerini kontrol edeceğiz.
 
+=======
+    urun = forms.ModelChoiceField(
+    queryset=GiyimUrunu.objects.all(),
+    required=False,
+    label="Verilen Ürün",
+    widget=forms.Select(attrs={
+        'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
+    })
+    )
+
+    miktar = forms.IntegerField(
+        required=False,
+        min_value=1,
+        label="Miktar",
+        widget=forms.NumberInput(attrs={
+            'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
+        })
+    )
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
     giris_tarihi = forms.DateTimeField(
         label='Giriş Tarihi',
         required=False,
@@ -354,6 +390,11 @@ class MisafirIslemForm(forms.ModelForm):
             'type': 'datetime-local',
             'class': 'mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 p-2 hover:bg-blue-50 focus:outline-none transition-colors duration-200'
         })
+<<<<<<< HEAD
+=======
+        
+        
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
     )
 
     cikis_tarihi = forms.DateTimeField(
@@ -376,10 +417,14 @@ class MisafirIslemForm(forms.ModelForm):
 
     class Meta:
         model = Islem
+<<<<<<< HEAD
         fields = [
             'islem_turu', 'tutar', 'aciklama', 'giris_tarihi', 'cikis_tarihi', 'cikis_nedeni', 'kurum',
             'urun', 'miktar' # Yeni eklenen alanlar
         ]
+=======
+        fields = ['islem_turu', 'tutar', 'aciklama', 'giris_tarihi', 'cikis_tarihi', 'cikis_nedeni', 'kurum']
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 
         widgets = {
             'islem_turu': forms.Select(attrs={
@@ -395,6 +440,7 @@ class MisafirIslemForm(forms.ModelForm):
                 'placeholder': 'İşlemle ilgili notlar...'
             }),
             'kurum': forms.Select(attrs={
+<<<<<<< HEAD
                 'class': 'mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm p-2 focus:ring-blue-600 focus:border-blue-600 hover:bg-green-50 transition-colors duration-200'
             }),
             # Yeni eklenen urun ve miktar alanları için widget'lar
@@ -420,11 +466,18 @@ class MisafirIslemForm(forms.ModelForm):
         self.fields['miktar'].required = False
 
 
+=======
+            'class': 'mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm p-2 focus:ring-blue-600 focus:border-blue-600 hover:bg-green-50 transition-colors duration-200'
+            }),
+        }
+
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
     def clean(self):
         cleaned_data = super().clean()
         islem_turu = cleaned_data.get('islem_turu')
         cikis_nedeni = cleaned_data.get('cikis_nedeni')
         cikis_tarihi = cleaned_data.get('cikis_tarihi')
+<<<<<<< HEAD
         urun = cleaned_data.get('urun')
         miktar = cleaned_data.get('miktar')
 
@@ -432,11 +485,17 @@ class MisafirIslemForm(forms.ModelForm):
             cikis_islem_obj = IslemTuru.objects.get(ad__iexact='Çıkış')
             ayni_yardim_islem_obj = IslemTuru.objects.get(ad__iexact='Ayni Yardım')
 
+=======
+
+        try:
+            cikis_islem_obj = IslemTuru.objects.get(ad__iexact='Çıkış')
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
             if islem_turu == cikis_islem_obj:
                 if not cikis_nedeni:
                     self.add_error('cikis_nedeni', 'Çıkış işlemi için çıkış nedeni zorunludur.')
                 if not cikis_tarihi:
                     self.add_error('cikis_tarihi', 'Çıkış işlemi için çıkış tarihi zorunludur.')
+<<<<<<< HEAD
                 # Çıkış işlemiyse ayni ürün/miktar alanı olmamalı
                 if urun or miktar:
                     self.add_error(None, "Çıkış işlemi sırasında ayni ürün/miktar belirtilemez.") # Genel hata veya ilgili alanlara
@@ -482,6 +541,10 @@ class MisafirIslemForm(forms.ModelForm):
         except IslemTuru.DoesNotExist:
             # İşlem türleri veritabanında bulunamazsa hata mesajı
             self.add_error(None, "Sistemde 'Çıkış' veya 'Ayni Yardım' işlem türleri tanımlı değil. Lütfen yöneticinizle iletişime geçin.")
+=======
+        except IslemTuru.DoesNotExist:
+            pass
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
 
         return cleaned_data
 

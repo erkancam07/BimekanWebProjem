@@ -1,6 +1,7 @@
 {% extends 'bimekan/base.html' %}
 {% block content %}
 <div class="bg-white rounded-lg shadow p-6 max-w-2xl mx-auto">
+<<<<<<< HEAD
     <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
         <i class="fas fa-box-open text-indigo-600 mr-2"></i> Yeni Ürün Tanımla
     </h2>
@@ -36,3 +37,33 @@
     </form>
 </div>
 {% endblock %}
+=======
+ 
+    <h2 class="text-xl mb-4 font-bold text-gray-800 bg-gradient-to-r from-sky-100 via-sky-50 to-white px-4 py-2 rounded-md flex items-center">
+  <i class="fas fa-plus-square text-indigo-600 mr-2"></i> Yeni Stok Girişi
+</h2>
+
+
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ field.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="text-right">
+      <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
+        <i class="fas fa-save mr-2"></i> Kaydet
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+>>>>>>> 3df35d64b63d79cb98d0843a2f23eefade12dd17
