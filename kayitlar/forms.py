@@ -355,6 +355,15 @@ class MisafirIslemForm(forms.ModelForm):
             'class': 'mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 p-2 hover:bg-blue-50 focus:outline-none transition-colors duration-200'
         })
     )
+    yatak_no = forms.ModelChoiceField(
+        queryset=Yatak.objects.filter(dolu_mu=False),
+        label='Yatak No',
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm p-2 focus:ring-green-600 focus:border-green-600 hover:bg-green-50 transition-colors duration-200',
+            'id': 'id_yatak_no'  # JavaScript ile kontrol edeceğiz
+        })
+    )
 
     cikis_tarihi = forms.DateTimeField(
         label='Çıkış Tarihi',
@@ -378,7 +387,7 @@ class MisafirIslemForm(forms.ModelForm):
         model = Islem
         fields = [
             'islem_turu', 'tutar', 'aciklama', 'giris_tarihi', 'cikis_tarihi', 'cikis_nedeni', 'kurum',
-            'urun', 'miktar' # Yeni eklenen alanlar
+            'urun', 'miktar','yatak_no' # Yeni eklenen alanlar
         ]
 
         widgets = {
@@ -419,6 +428,8 @@ class MisafirIslemForm(forms.ModelForm):
         self.fields['urun'].required = False
         self.fields['miktar'].required = False
 
+        # 🛏️ Yalnızca boş (dolu olmayan) yataklar getirilecek
+        #self.fields['yatak_no'].queryset = Yatak.objects.filter(dolu_mu=False).order_by('oda_no', 'yatak_no')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -427,6 +438,12 @@ class MisafirIslemForm(forms.ModelForm):
         cikis_tarihi = cleaned_data.get('cikis_tarihi')
         urun = cleaned_data.get('urun')
         miktar = cleaned_data.get('miktar')
+        
+        giris_islem_obj = IslemTuru.objects.get(ad__iexact='Giriş')
+        if islem_turu == giris_islem_obj:
+            yatak_no = cleaned_data.get('yatak_no')
+            if not yatak_no:
+                self.add_error('yatak_no', 'Giriş işlemi için yatak seçimi zorunludur.')
 
         try:
             cikis_islem_obj = IslemTuru.objects.get(ad__iexact='Çıkış')

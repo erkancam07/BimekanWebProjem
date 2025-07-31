@@ -501,6 +501,8 @@ def yoklama_listesi(request):
             kayitlar = kayitlar.filter(tarih__range=[start, end])
         except ValueError:
             pass
+    
+    
 
     toplam_var = kayitlar.filter(durum__ad__iexact='var').count()
     toplam_yok = kayitlar.filter(durum__ad__iexact='yok').count()
@@ -851,6 +853,8 @@ def misafir_islem_yap(request, pk):
             islem = form.save(commit=False)
             islem.misafir = misafir
 
+            islem.yatak_no = form.cleaned_data.get('yatak_no')
+
             islem_turu_adi_lower = islem.islem_turu.ad.lower()
 
             # ❗ ESKİ AYNİ YARDIM BLOĞU BURADAN KALDIRILDI ❗
@@ -876,10 +880,13 @@ def misafir_islem_yap(request, pk):
             # 🔹 Giriş tarihi eşleştirme (aynı kaldı, Misafir modeli güncellendi)
             if islem_turu_adi_lower == 'giriş':
                 giris_tarihi = form.cleaned_data.get('giris_tarihi')
+                yatak_no = form.cleaned_data.get('yatak_no')
                 if giris_tarihi:
                     islem.giris_tarihi = giris_tarihi # İşlem kaydına giriş tarihini de ekleyebiliriz (opsiyonel)
                     misafir.giris_tarihi = giris_tarihi
                     misafir.durum = 'AKTIF' # Girişte durumu aktif yap
+                if yatak_no:
+                    misafir.yatak_no = yatak_no
 
             elif islem_turu_adi_lower == 'çıkış':
                 cikis_tarihi = form.cleaned_data.get('cikis_tarihi')

@@ -135,6 +135,10 @@
                                 {% endif %}
                             </div>
                         </div>
+                       <div id="yatak_no_div" style="display:none;">
+    {{ form.yatak_no.label_tag }}
+    {{ form.yatak_no|add_class:"block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 transition duration-150 ease-in-out" }}
+</div>
                         <div id="cikis-islemleri-div" class="space-y-4 hidden"> 
                             <div>
                                 <label for="{{ form.cikis_tarihi.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Çıkış Tarihi</label>
@@ -194,15 +198,18 @@
         const girisInput = document.getElementById("id_giris_tarihi");
         const cikisInput = document.getElementById("id_cikis_tarihi");
 
+        const yatakSelect = document.getElementById("id_yatak_no"); // select input
+        const yatakWrapper = document.getElementById("yatak_no_div");
+
         function toggleIslemAlanlari() {
             const secim = select.options[select.selectedIndex].text.trim().toLowerCase();
             const now = new Date();
-            // ISO formatına T ekleyerek datetime-local için uygun hale getiriyoruz
             const formatted = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}T${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
             girisDiv.classList.add("hidden");
             cikisDiv.classList.add("hidden");
             ayniDiv.classList.add("hidden");
+
             girisInput.value = '';
             cikisInput.value = '';
 
@@ -211,19 +218,25 @@
                 if (girisInput.type === "datetime-local") {
                     girisInput.value = formatted;
                 } else {
-                    // Eğer type date ise, sadece tarih kısmını ata
                     girisInput.value = formatted.split('T')[0];
                 }
-            } else if (secim === "çıkış") {
-                cikisDiv.classList.remove("hidden");
-                if (cikisInput.type === "datetime-local") {
-                    cikisInput.value = formatted;
-                } else {
-                    // Eğer type date ise, sadece tarih kısmını ata
-                    cikisInput.value = formatted.split('T')[0];
+                if (yatakWrapper) yatakWrapper.style.display = "block";
+            } else {
+                if (secim === "çıkış") {
+                    cikisDiv.classList.remove("hidden");
+                    if (cikisInput.type === "datetime-local") {
+                        cikisInput.value = formatted;
+                    } else {
+                        cikisInput.value = formatted.split('T')[0];
+                    }
+                } else if (secim === "ayni yardım") {
+                    ayniDiv.classList.remove("hidden");
                 }
-            } else if (secim === "ayni yardım") {
-                ayniDiv.classList.remove("hidden");
+
+                if (yatakWrapper) {
+                    yatakSelect.value = ""; // temizle
+                    yatakWrapper.style.display = "none";
+                }
             }
         }
 
@@ -231,7 +244,8 @@
             toggleIslemAlanlari();
             select.addEventListener("change", toggleIslemAlanlari);
         }
-    }); 
+    });
 </script>
+
 {% endblock %}
 {% endblock %}

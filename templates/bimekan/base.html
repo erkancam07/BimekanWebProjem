@@ -151,7 +151,7 @@
                                 <a href="{% url 'yoklama_listesi' %}" id="btn-yoklama-listesi"
                                     class="w-full text-left px-4 py-2 rounded-md font-medium transition flex items-center
                                             {% if current_section == 'yoklama-listesi' %}bg-blue-100 text-blue-700{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
-                                    <i class="fas fa-list-alt mr-2"></i> Yoklama Listesi
+                                    <i class="fas fa-list-alt mr-2"></i> Yoklama Arşivi
                                 </a>
                             </li>
                             <li class="sidebar-menu-item">
@@ -197,12 +197,12 @@
     <ul id="submenu-stok" class="pl-6 mt-2 space-y-1 
         {% if request.resolver_match.url_name == 'yeni_urun_tanimla' or request.resolver_match.url_name == 'stok_hareket_ekle' or request.resolver_match.url_name == 'stok_raporu' %}block{% else %}hidden{% endif %}">
 
-       {% comment %}  <li>
+         <li>
             <a href="{% url 'yeni_urun_tanimla' %}"
                 class="{% if request.resolver_match.url_name == 'yeni_urun_tanimla' %}bg-gray-100 text-blue-700 font-semibold{% else %}text-gray-700 hover:bg-gray-100{% endif %} block px-4 py-2 rounded transition">
                 ➕ Yeni Ürün Tanımla
             </a>
-        </li> {% endcomment %}
+        </li> 
 
         <li>
             <a href="{% url 'stok_hareket_ekle' %}"
