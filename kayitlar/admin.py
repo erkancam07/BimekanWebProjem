@@ -74,7 +74,7 @@ class IslemAdmin(admin.ModelAdmin):
     readonly_fields = ('islem_no',)
     fieldsets = ( # Yeni fieldsets tanımı eklendi
         (None, {
-            'fields': ('misafir', 'islem_turu', 'tutar', 'aciklama',"kurum") # 'tutar' eklendi
+            'fields': ('misafir', 'islem_turu','islem_zamani', 'tutar', 'aciklama',"kurum") # 'tutar' eklendi
         }),
     )
 

@@ -101,66 +101,7 @@ class GiyimIslemForm(forms.ModelForm):
                     self.add_error('miktar', f"Çıkış miktarı ({miktar} adet) mevcut stoktan ({urun.mevcut_adet} adet) fazla olamaz.")
         
         return cleaned_data
-
-""" class GiyimIslemForm(forms.ModelForm):
-    class Meta:
-        model = GiyimIslem
-        # 'kaynak_firma' alanını buraya ekliyoruz
-        fields = ['urun', 'miktar', 'islem_turu', 'alici', 'kaynak_firma', 'aciklama']
-        widgets = {
-            'urun': forms.Select(attrs={
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
-            }),
-            'miktar': forms.NumberInput(attrs={
-                'min': 1,
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
-            }),
-            'islem_turu': forms.Select(attrs={
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
-            }),
-            'alici': forms.Select(attrs={
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
-            }),
-            # !!! YENİ WIDGET EKLENDİ !!!
-            'kaynak_firma': forms.TextInput(attrs={
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
-                'placeholder': 'Örn: Ana Depo, Tedarikçi X'
-            }),
-            'aciklama': forms.Textarea(attrs={
-                'rows': 3,
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-none'
-            }),
-        }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        urun = cleaned_data.get('urun')
-        miktar = cleaned_data.get('miktar')
-        islem_turu = cleaned_data.get('islem_turu')
-        alici = cleaned_data.get('alici')
-        kaynak_firma = cleaned_data.get('kaynak_firma')
-
-        # Çıkış işlemi ise Alıcı zorunlu olmalı
-        if islem_turu == 'Çıkış':
-            if not alici:
-                self.add_error('alici', "Çıkış işlemi için alıcı seçimi zorunludur.")
-            # Giriş kaynağı belirtilmemeli
-            if kaynak_firma:
-                self.add_error('kaynak_firma', "Çıkış işleminde giriş kaynağı belirtilemez.")
-            # Yeterli stok kontrolü
-            if urun and miktar:
-                if urun.mevcut_adet < miktar:
-                    self.add_error('miktar', f"Çıkış miktarı ({miktar} adet) mevcut stoktan ({urun.mevcut_adet} adet) fazla olamaz.")
-
-        # Giriş işlemi ise Kaynak Firma zorunlu olmalı ve Alıcı seçilmemeli
-        elif islem_turu == 'Giriş':
-            if not kaynak_firma:
-                self.add_error('kaynak_firma', "Giriş işlemi için kaynak firma/tedarikçi belirtilmesi zorunludur.")
-            if alici:
-                self.add_error('alici', "Giriş işleminde alıcı seçilemez.")
-
-        return cleaned_data """
-    
+   
 class StokEkleForm(forms.ModelForm):
     # Bu form, sadece yeni bir GiyimUrunu tanımı oluşturmak içindir.
     # Eğer aynı kombinasyon zaten varsa, bir hata döndürmelidir.
@@ -198,27 +139,6 @@ class StokEkleForm(forms.ModelForm):
                 raise forms.ValidationError("Bu ürün adı ve kategori kombinasyonu zaten mevcut. Lütfen mevcut bir ürünü güncelleyin veya 'Stok Hareketi Ekle' formunu kullanın.")
         return cleaned_data
     
-""" class StokEkleForm(forms.ModelForm):
-    class Meta:
-        model = GiyimUrunu
-        fields = ['ad', 'kategori', 'mevcut_adet', 'aciklama']
-
-        widgets = {
-            'ad': forms.Select(attrs={ # <-- BURASI DEĞİŞTİ: forms.TextInput yerine forms.Select
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
-            }),
-            'kategori': forms.Select(attrs={
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
-            }),
-            'mevcut_adet': forms.NumberInput(attrs={
-                'min': 0,
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
-            }),
-            'aciklama': forms.Textarea(attrs={
-                'rows': 3,
-                'class': 'w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-none'
-            }),
-        } """
 # TCKN için özel bir Django Validator fonksiyonu tanımlıyoruz
 def tckn_validator(value):
     gecerli, mesaj = tckn_dogrula(value)
@@ -240,11 +160,6 @@ class GunlukYoklamaForm(forms.Form):
             )
 
 class MisafirKayitForm(forms.ModelForm):
-    """
-    Yeni misafir kaydı için kullanılan form.
-    Sosyal Güvence seçenekleri ve yatak listesi dinamik olarak çekilir.
-    Giriş tarihi otomatik olarak bugünün tarihiyle dolu gelir.
-    """
     class Meta:
         model = Misafir
         fields = [
@@ -382,12 +297,21 @@ class MisafirIslemForm(forms.ModelForm):
             'placeholder': 'Çıkış nedeni'
         })
     )
+     # İşlem Zamanı alanını ekle
+    islem_zamani = forms.DateTimeField(
+        label='İşlem Zamanı',
+        required=False,  # Başlangıçta zorunlu değil
+        widget=forms.DateTimeInput(attrs={
+            'type': 'datetime-local',
+            'class': 'mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 p-2 hover:bg-blue-50 focus:outline-none transition-colors duration-200'
+        })
+    )
 
     class Meta:
         model = Islem
         fields = [
             'islem_turu', 'tutar', 'aciklama', 'giris_tarihi', 'cikis_tarihi', 'cikis_nedeni', 'kurum',
-            'urun', 'miktar','yatak_no' # Yeni eklenen alanlar
+            'urun', 'miktar','yatak_no', 'islem_zamani' # Yeni eklenen alanlar
         ]
 
         widgets = {
@@ -427,6 +351,7 @@ class MisafirIslemForm(forms.ModelForm):
         # Bu alanların görünüp görünmeyeceği JavaScript ile kontrol edilecek
         self.fields['urun'].required = False
         self.fields['miktar'].required = False
+        self.fields['islem_zamani'].widget = forms.HiddenInput()
 
         # 🛏️ Yalnızca boş (dolu olmayan) yataklar getirilecek
         #self.fields['yatak_no'].queryset = Yatak.objects.filter(dolu_mu=False).order_by('oda_no', 'yatak_no')
@@ -444,30 +369,29 @@ class MisafirIslemForm(forms.ModelForm):
             yatak_no = cleaned_data.get('yatak_no')
             if not yatak_no:
                 self.add_error('yatak_no', 'Giriş işlemi için yatak seçimi zorunludur.')
-
         try:
             cikis_islem_obj = IslemTuru.objects.get(ad__iexact='Çıkış')
             ayni_yardim_islem_obj = IslemTuru.objects.get(ad__iexact='Ayni Yardım')
-
             if islem_turu == cikis_islem_obj:
+                # Çıkış işleminde işlem zamanı kontrolü yapma (kaldırıldı)
                 if not cikis_nedeni:
                     self.add_error('cikis_nedeni', 'Çıkış işlemi için çıkış nedeni zorunludur.')
                 if not cikis_tarihi:
                     self.add_error('cikis_tarihi', 'Çıkış işlemi için çıkış tarihi zorunludur.')
                 # Çıkış işlemiyse ayni ürün/miktar alanı olmamalı
                 if urun or miktar:
-                    self.add_error(None, "Çıkış işlemi sırasında ayni ürün/miktar belirtilemez.") # Genel hata veya ilgili alanlara
-                    # self.add_error('urun', "Çıkış işlemi sırasında ürün belirtilemez.")
-                    # self.add_error('miktar', "Çıkış işlemi sırasında miktar belirtilemez.")
-
+                    self.add_error(None, "Çıkış işlemi sırasında ayni ürün/miktar belirtilemez.")
             elif islem_turu == ayni_yardim_islem_obj:
+                # Ayni Yardım işleminde işlem zamanı kontrolü
+                if not cleaned_data.get('islem_zamani'):
+                    self.add_error('islem_zamani', 'Ayni yardım işlemi için işlem zamanı zorunludur.')
+                    
                 if not urun:
                     self.add_error('urun', "Ayni yardım işlemi için ürün seçimi zorunludur.")
                 if not miktar:
                     self.add_error('miktar', "Ayni yardım işlemi için miktar zorunludur.")
                 elif miktar and miktar <= 0:
                     self.add_error('miktar', "Miktar pozitif bir değer olmalıdır.")
-
                 # Sadece ayni yardım işlemi ise stok kontrolü
                 if urun and miktar:
                     if urun.mevcut_adet < miktar:
@@ -483,7 +407,6 @@ class MisafirIslemForm(forms.ModelForm):
                 if cleaned_data.get('tutar') and cleaned_data.get('tutar') != 0:
                     self.add_error('tutar', "Ayni yardım işlemlerinde tutar '0' olmalıdır.")
                     cleaned_data['tutar'] = 0 # Otomatik olarak sıfırlayalım
-
             else: # Diğer işlem türleri (nakdi, vb.)
                 # Eğer ayni yardım veya çıkış işlemi değilse, urun ve miktar alanı boş olmalı
                 if urun:
@@ -495,11 +418,9 @@ class MisafirIslemForm(forms.ModelForm):
                     self.add_error('cikis_tarihi', "Bu işlem türünde çıkış tarihi belirtilemez.")
                 if cikis_nedeni:
                     self.add_error('cikis_nedeni', "Bu işlem türünde çıkış nedeni belirtilemez.")
-
         except IslemTuru.DoesNotExist:
             # İşlem türleri veritabanında bulunamazsa hata mesajı
             self.add_error(None, "Sistemde 'Çıkış' veya 'Ayni Yardım' işlem türleri tanımlı değil. Lütfen yöneticinizle iletişime geçin.")
-
         return cleaned_data
 
     def clean_giris_tarihi(self):

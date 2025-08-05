@@ -846,17 +846,22 @@ from .models import GiyimIslem
 @login_required
 def misafir_islem_yap(request, pk):
     misafir = get_object_or_404(Misafir, pk=pk)
-
     if request.method == 'POST':
         form = MisafirIslemForm(request.POST, instance=Islem())
         if form.is_valid():
             islem = form.save(commit=False)
             islem.misafir = misafir
-
             islem.yatak_no = form.cleaned_data.get('yatak_no')
-
             islem_turu_adi_lower = islem.islem_turu.ad.lower()
-
+            
+            # İşlem zamanını ayarla
+            if islem_turu_adi_lower == 'ayni yardım':
+                # Ayni Yardım işlemlerinde formdan gelen değeri kullan
+                islem.islem_zamani = form.cleaned_data.get('islem_zamani')
+            else:
+                # Diğer işlemlerde şu anki zamanı kullan
+                islem.islem_zamani = timezone.now()
+            
             # ❗ ESKİ AYNİ YARDIM BLOĞU BURADAN KALDIRILDI ❗
             # Stok güncelleme ve GiyimIslem oluşturma mantığı artık Islem modelinin save metodunda.
             # Dolayısıyla burada sadece islem.aciklama ve islem.tutar ayarı kalabilir.
@@ -866,17 +871,14 @@ def misafir_islem_yap(request, pk):
                 if urun and miktar:
                     islem.aciklama = f"Ayni yardım: {miktar} adet {urun.ad} verildi. " + (islem.aciklama or "")
                     islem.tutar = 0 # Ayni yardımların tutarı 0 olmalı
-
             # 🔹 Giriş kontrolü (aynı kaldı)
             if islem_turu_adi_lower == 'giriş' and misafir.durum == 'AKTIF':
                 messages.error(request, f"'{misafir.ad} {misafir.soyad}' zaten aktif durumda. Tekrar giriş yapılamaz.")
                 return redirect('misafir_detay', pk=misafir.pk)
-
             # 🔹 Çıkış kontrolü (aynı kaldı)
             if islem_turu_adi_lower == 'çıkış' and misafir.durum == 'PASIF':
                 messages.error(request, f"'{misafir.ad} {misafir.soyad}' zaten pasif durumda. Tekrar çıkış yapılamaz.")
                 return redirect('misafir_detay', pk=misafir.pk)
-
             # 🔹 Giriş tarihi eşleştirme (aynı kaldı, Misafir modeli güncellendi)
             if islem_turu_adi_lower == 'giriş':
                 giris_tarihi = form.cleaned_data.get('giris_tarihi')
@@ -887,7 +889,6 @@ def misafir_islem_yap(request, pk):
                     misafir.durum = 'AKTIF' # Girişte durumu aktif yap
                 if yatak_no:
                     misafir.yatak_no = yatak_no
-
             elif islem_turu_adi_lower == 'çıkış':
                 cikis_tarihi = form.cleaned_data.get('cikis_tarihi')
                 cikis_nedeni = form.cleaned_data.get('cikis_nedeni')
@@ -910,12 +911,10 @@ def misafir_islem_yap(request, pk):
                 messages.info(request, f"'{misafir.ad} {misafir.soyad}' için '{islem.islem_turu.ad}' işlemi başarıyla yapıldı. Yeni durum: '{misafir.get_durum_display()}'.")
             else: # Diğer işlem türleri (nakdi yardım, vb.)
                  messages.success(request, f"'{misafir.ad} {misafir.soyad}' için '{islem.islem_turu.ad}' işlemi başarıyla kaydedildi.")
-
             misafir.save() # Misafir objesini kaydet (durum ve tarih güncellemeleri için)
             islem.save() # Islem objesini kaydet (bu, modeldeki save metodunu tetikler ve stoğu günceller)
             
             return redirect('misafir_detay', pk=misafir.pk)
-
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -923,7 +922,6 @@ def misafir_islem_yap(request, pk):
                     messages.error(request, f"'{label}' alanında hata: {error}")
     else:
         form = MisafirIslemForm()
-
     context = {
         'form': form,
         'misafir': misafir,
@@ -931,7 +929,6 @@ def misafir_islem_yap(request, pk):
         'current_section': 'misafir-islem-form',
     }
     return render(request, 'bimekan/misafir_islem.html', context)
-
 
 # Misafir işlem seçim view (değişiklik yok)
 @login_required

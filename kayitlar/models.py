@@ -226,7 +226,8 @@ class Islem(models.Model):
         verbose_name="İşlem Türü"
     )
     islem_zamani = models.DateTimeField(
-        auto_now_add=True,
+        # auto_now_add=True,
+        default=timezone.now,  # Varsayılan değer olarak şu anki zamanı ayarlayın
         verbose_name="İşlem Zamanı"
     )
     kurum = models.ForeignKey(
